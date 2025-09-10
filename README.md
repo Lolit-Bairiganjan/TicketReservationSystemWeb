@@ -4,6 +4,7 @@
 
 ![Django](https://img.shields.io/badge/Django-5.2.5-092E20?style=for-the-badge&logo=django&logoColor=white)
 ![Python](https://img.shields.io/badge/Python-3.13-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
 ![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
 ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
@@ -44,6 +45,7 @@
 
 ### Prerequisites
 - Python 3.8+ installed
+- MySQL or MariaDB installed and running
 - Git installed
 - Basic knowledge of Django
 
@@ -60,22 +62,50 @@
    cd DemoProject
    ```
 
-3. **Install dependencies** (Optional - Django is the main requirement)
+3. **Install dependencies**
    ```bash
-   pip install django
+   pip install django mysqlclient
+   ```
+   
+   *Note: For MariaDB, you can also use:*
+   ```bash
+   pip install django PyMySQL
    ```
 
-4. **Run database migrations**
+4. **Configure database settings**
+   Update `DemoProject/settings.py` with your MySQL/MariaDB credentials:
+   ```python
+   DATABASES = {
+       'default': {
+           'ENGINE': 'django.db.backends.mysql',
+           'NAME': 'your_database_name',
+           'USER': 'your_username',
+           'PASSWORD': 'your_password',
+           'HOST': 'localhost',
+           'PORT': '3306',
+       }
+   }
+   ```
+
+5. **Create database**
+   ```bash
+   # Login to MySQL/MariaDB and create database
+   mysql -u root -p
+   CREATE DATABASE your_database_name;
+   exit
+   ```
+
+6. **Run database migrations**
    ```bash
    python manage.py migrate
    ```
 
-5. **Start the development server**
+7. **Start the development server**
    ```bash
    python manage.py runserver
    ```
 
-6. **Open your browser**
+8. **Open your browser**
    Navigate to `http://127.0.0.1:8000/` to see the beautiful application!
 
 ---
@@ -105,7 +135,8 @@
 ### **Backend**
 - **Django 5.2.5** - High-level Python web framework
 - **Python 3.13** - Programming language
-- **SQLite** - Default database (easily configurable)
+- **MySQL/MariaDB** - Relational database management system
+- **mysqlclient/PyMySQL** - Python MySQL database connectors
 
 ### **Frontend**
 - **HTML5** - Semantic markup
@@ -148,8 +179,8 @@ DemoProject/
 │   └── admin.py            # Admin configuration
 ├── static/                 # Static files (CSS, JS, images)
 ├── media/                  # User uploaded files
-├── db.sqlite3             # SQLite database
-└── manage.py              # Django management script
+├── manage.py              # Django management script
+└── requirements.txt       # Python dependencies (if present)
 ```
 
 ---
@@ -191,8 +222,10 @@ DemoProject/
 
 ### **Database Customization**
 - Update models in `mainApp/models.py`
+- Configure MySQL/MariaDB settings in `DemoProject/settings.py`
 - Run `python manage.py makemigrations` and `python manage.py migrate`
 - Add admin interface configurations in `mainApp/admin.py`
+- For production, consider using connection pooling and optimized settings
 
 ---
 
