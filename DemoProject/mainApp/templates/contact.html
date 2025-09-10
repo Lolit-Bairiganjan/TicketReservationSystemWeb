@@ -1,0 +1,437 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="WhatsApp Image 2025-08-23 at 11.02.52 PM.jpeg">
+    <title>Contact Us - GetSetRide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .hero-bg {
+            background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.9) 100%);
+            backdrop-filter: blur(10px);
+        }
+        
+        .feature-card {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.9);
+        }
+        
+        .floating-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        /* Navigation Link Gradient Hover Effects */
+        .nav-link-gradient {
+            position: relative;
+            font-weight: 500;
+        }
+        
+        .nav-link-gradient::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(240, 240, 255, 0.95) 50%, rgba(255, 255, 255, 0.9) 100%);
+            opacity: 0;
+            border-radius: 24px;
+            transition: opacity 0.6s ease;
+            z-index: 1;
+        }
+        
+        .nav-link-gradient:hover::before {
+            opacity: 1;
+        }
+        
+        .nav-link-gradient:hover {
+            color: #4338ca;
+        }
+        
+        .nav-link-gradient:hover span {
+            color: #4338ca;
+            font-weight: 600;
+        }
+        
+        /* Mobile menu button gradient hover */
+        #mobile-menu-button:hover {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(240, 240, 255, 0.3) 100%);
+            color: white;
+            border-radius: 24px;
+            padding: 8px;
+            transition: all 0.6s ease;
+        }
+        
+        /* Username Spilled Paint Gradient Effect */
+        .username-paint {
+            position: relative;
+            overflow: hidden;
+            border-radius: 16px;
+        }
+        
+        .username-paint::before {
+            content: '';
+            position: absolute;
+            top: -20%;
+            left: -30%;
+            width: 160%;
+            height: 140%;
+            background: linear-gradient(
+                127deg,
+                rgba(255, 255, 255, 0.25) 0%,
+                rgba(240, 240, 255, 0.35) 25%,
+                rgba(255, 255, 255, 0.3) 45%,
+                rgba(240, 240, 255, 0.28) 65%,
+                rgba(255, 255, 255, 0.32) 80%,
+                transparent 100%
+            );
+            transform: rotate(-15deg) skew(-8deg, -3deg);
+            z-index: 1;
+        }
+        
+        .username-paint::after {
+            content: '';
+            position: absolute;
+            bottom: -15%;
+            right: -25%;
+            width: 120%;
+            height: 100%;
+            background: linear-gradient(
+                45deg,
+                transparent 0%,
+                rgba(255, 255, 255, 0.22) 30%,
+                rgba(240, 240, 255, 0.3) 60%,
+                rgba(255, 255, 255, 0.25) 100%
+            );
+            transform: rotate(25deg) skew(5deg, 8deg);
+            z-index: 1;
+        }
+        
+        .username-paint span {
+            position: relative;
+            z-index: 2;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ffffff 0%, #f0f0ff 50%, #ffffff 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Header & Navigation Bar -->
+    <header class="bg-gradient-to-r from-indigo-600 to-purple-600 shadow-2xl rounded-b-xl border-b-2 border-indigo-200/20">
+        <nav class="container mx-auto px-6 py-4 flex items-center justify-between">
+            <!-- Logo -->
+            <a href="/" class="flex items-center space-x-2">
+                <img src="{% static 'mainApp/icons8-train-100.png' %}" alt="GetSetReady" class="h-10 w-10 mr-4 flex-shrink-0">
+                <span class="text-2xl font-bold bg-gradient-to-r from-indigo-300 to-purple-300 bg-clip-text text-transparent">GetSetRide</span>
+            </a>
+            
+            <!-- Navigation Links -->
+            <div class="hidden md:flex space-x-2">
+                
+                {% if user.is_authenticated %}
+
+                <a href="/" class="nav-link-gradient text-gray-200 px-4 py-2 rounded-lg transition-all duration-300 relative overflow-hidden group">
+                    <span class="relative z-10">Home</span>
+                </a>
+                <a href="/features/" class="nav-link-gradient text-gray-200 px-4 py-2 rounded-lg transition-all duration-300 relative overflow-hidden group">
+                    <span class="relative z-10">Features</span>
+                </a>
+                <a href="/contacts/" class="nav-link-gradient text-gray-200 px-4 py-2 rounded-lg transition-all duration-300 relative overflow-hidden group bg-white/20">
+                    <span class="relative z-10 text-white font-semibold">Contact</span>
+                </a>
+                <div class="username-paint text-gray-200 px-4 py-2">
+                    <span>Welcome, {{ user.username }}</span>
+                </div>
+                <a href="/logout" class="nav-link-gradient text-gray-200 px-4 py-2 rounded-lg transition-all duration-300 relative overflow-hidden group">
+                    <span class="relative z-10">Logout</span>
+                </a>
+                {% else %}
+                
+                <a href="/" class="nav-link-gradient text-gray-200 px-4 py-2 rounded-lg transition-all duration-300 relative overflow-hidden group">
+                    <span class="relative z-10">Home</span>
+                </a>
+                <a href="/features/" class="nav-link-gradient text-gray-200 px-4 py-2 rounded-lg transition-all duration-300 relative overflow-hidden group">
+                    <span class="relative z-10">Features</span>
+                </a>
+                <a href="/contacts/" class="nav-link-gradient text-gray-200 px-4 py-2 rounded-lg transition-all duration-300 relative overflow-hidden group bg-white/20">
+                    <span class="relative z-10 text-white font-semibold">Contact</span>
+                </a>
+                <a href="/login" class="nav-link-gradient text-gray-200 px-4 py-2 rounded-lg transition-all duration-300 relative overflow-hidden group">
+                    <span class="relative z-10">Login</span>
+                </a>
+                {% endif %}
+            </div>
+
+            <!-- Mobile Menu Button -->
+            <div class="md:hidden">
+                <button id="mobile-menu-button" class="text-gray-200 hover:text-white focus:outline-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+            </div>
+        </nav>
+        <!-- Mobile Menu (hidden by default) -->
+        <div id="mobile-menu" class="hidden md:hidden bg-gradient-to-r from-indigo-600 to-purple-600 rounded-b-xl shadow-2xl border-t border-indigo-200/10">
+            <div class="flex flex-col p-4 space-y-2">
+                <a href="/" class="nav-link-gradient block px-4 py-2 text-gray-200 rounded-lg transition-all duration-300 relative overflow-hidden group">
+                    <span class="relative z-10">Home</span>
+                </a>
+                <a href="/features/" class="nav-link-gradient block px-4 py-2 text-gray-200 rounded-lg transition-all duration-300 relative overflow-hidden group">
+                    <span class="relative z-10">Features</span>
+                </a>
+                <a href="/contacts/" class="nav-link-gradient block px-4 py-2 text-white bg-white/20 rounded-lg transition-all duration-300 relative overflow-hidden group">
+                    <span class="relative z-10 font-semibold">Contact</span>
+                </a>
+                <a href="/login" class="nav-link-gradient block px-4 py-2 text-gray-200 rounded-lg transition-all duration-300 relative overflow-hidden group">
+                    <span class="relative z-10">Login</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-bg rounded-xl shadow-2xl mx-4 md:mx-auto max-w-7xl mt-8 py-16 text-center relative overflow-hidden">
+        <!-- Decorative elements -->
+        <div class="absolute top-0 left-0 w-20 h-20 bg-indigo-200 rounded-full opacity-20 floating-animation"></div>
+        <div class="absolute bottom-0 right-0 w-32 h-32 bg-purple-200 rounded-full opacity-20 floating-animation" style="animation-delay: -3s;"></div>
+        
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="mb-6">
+                <span class="inline-block px-4 py-2 bg-indigo-100 text-indigo-600 text-sm font-semibold rounded-full mb-4">
+                    📞 Get In Touch
+                </span>
+            </div>
+            <h1 class="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-6 leading-tight">
+                We're Here to Help
+            </h1>
+            <p class="text-xl md:text-2xl text-gray-700 mb-10 max-w-4xl mx-auto leading-relaxed">
+                Have questions about your booking? Need support? We'd love to hear from you!
+            </p>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="py-20 bg-gradient-to-r from-blue-50 to-indigo-100">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-7xl mx-auto">
+                
+                <!-- Contact Form -->
+                <div class="bg-white/80 backdrop-blur-md p-8 rounded-2xl shadow-xl border border-white/20">
+                    <h2 class="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-6">
+                        Send us a Message
+                    </h2>
+                    <p class="text-gray-600 mb-8 leading-relaxed">
+                        Fill out the form below and we'll get back to you within 24 hours.
+                    </p>
+
+                    <form class="space-y-6">
+                        <div>
+                            <label for="name" class="block text-gray-700 text-sm font-semibold mb-3">Full Name</label>
+                            <input type="text" id="name" name="name" 
+                                   class="w-full px-4 py-4 rounded-xl bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-300" 
+                                   placeholder="Enter your full name" required>
+                        </div>
+                        
+                        <div>
+                            <label for="email" class="block text-gray-700 text-sm font-semibold mb-3">Email Address</label>
+                            <input type="email" id="email" name="email" 
+                                   class="w-full px-4 py-4 rounded-xl bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-300" 
+                                   placeholder="Enter your email address" required>
+                        </div>
+                        
+                        <div>
+                            <label for="subject" class="block text-gray-700 text-sm font-semibold mb-3">Subject</label>
+                            <select id="subject" name="subject" 
+                                    class="w-full px-4 py-4 rounded-xl bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-300" required>
+                                <option value="">Select a topic</option>
+                                <option value="booking">Booking Support</option>
+                                <option value="payment">Payment Issues</option>
+                                <option value="cancellation">Cancellation/Refund</option>
+                                <option value="technical">Technical Support</option>
+                                <option value="feedback">Feedback</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label for="message" class="block text-gray-700 text-sm font-semibold mb-3">Message</label>
+                            <textarea id="message" name="message" rows="5" 
+                                      class="w-full px-4 py-4 rounded-xl bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-300" 
+                                      placeholder="Tell us how we can help you..." required></textarea>
+                        </div>
+                        
+                        <button type="submit" 
+                                class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold py-4 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-300">
+                            📧 Send Message
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Contact Information -->
+                <div class="space-y-8">
+                    <!-- Quick Contact -->
+                    <div class="bg-white/80 backdrop-blur-md p-8 rounded-2xl shadow-xl border border-white/20">
+                        <h3 class="text-2xl font-bold text-gray-800 mb-6">Quick Contact</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center space-x-4">
+                                <div class="bg-gradient-to-r from-indigo-500 to-purple-600 p-3 rounded-full">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-gray-800">Email</h4>
+                                    <a href="mailto:support@getsetride.com" class="text-indigo-600 font-medium hover:underline">
+                                        support@getsetride.com
+                                    </a>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center space-x-4">
+                                <div class="bg-gradient-to-r from-green-500 to-teal-600 p-3 rounded-full">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-gray-800">Phone</h4>
+                                    <a href="tel:+919876500000" class="text-indigo-600 font-medium hover:underline">
+                                        +91 98765 00000
+                                    </a>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center space-x-4">
+                                <div class="bg-gradient-to-r from-orange-500 to-red-600 p-3 rounded-full">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-gray-800">Address</h4>
+                                    <p class="text-gray-600">123 Railway Road, Ticket Town, State 45678</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Support Hours -->
+                    <div class="bg-white/80 backdrop-blur-md p-8 rounded-2xl shadow-xl border border-white/20">
+                        <h3 class="text-2xl font-bold text-gray-800 mb-6">Support Hours</h3>
+                        <div class="space-y-3">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Monday - Friday:</span>
+                                <span class="font-semibold text-gray-800">9:00 AM - 8:00 PM</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Saturday:</span>
+                                <span class="font-semibold text-gray-800">10:00 AM - 6:00 PM</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Sunday:</span>
+                                <span class="font-semibold text-gray-800">10:00 AM - 4:00 PM</span>
+                            </div>
+                            <hr class="my-4">
+                            <div class="text-center">
+                                <span class="inline-block px-3 py-1 bg-green-100 text-green-600 text-sm font-semibold rounded-full">
+                                    🟢 24/7 Emergency Support Available
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action Section -->
+    <section class="py-20 bg-gradient-to-r from-indigo-600 to-purple-700">
+        <div class="container mx-auto px-6 text-center">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-4xl md:text-5xl font-bold text-white mb-6">
+                    Need Immediate Help? 🚨
+                </h2>
+                <p class="text-xl text-indigo-100 mb-10 leading-relaxed">
+                    For urgent booking issues or travel emergencies, call our 24/7 helpline.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-6 justify-center items-center">
+                    <a href="tel:+919876500000" 
+                       class="inline-block px-12 py-6 text-xl font-bold text-indigo-600 bg-white rounded-full shadow-2xl hover:shadow-3xl transform hover:scale-110 transition duration-300 hover:bg-gray-50">
+                        📞 Call Now: +91 98765 00000
+                    </a>
+                    <a href="/" 
+                       class="inline-block px-12 py-6 text-xl font-semibold text-white border-2 border-white rounded-full hover:bg-white hover:text-indigo-600 transition duration-300">
+                        🏠 Back to Home
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="col-span-1 md:col-span-2">
+                    <h3 class="text-2xl font-bold mb-4 bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
+                        GetSetRide
+                    </h3>
+                    <p class="text-gray-300 mb-4 leading-relaxed">
+                        India's most trusted railway booking platform. Making train travel easy, convenient, and delightful for everyone.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="/" class="text-gray-300 hover:text-indigo-400 transition duration-300">Home</a></li>
+                        <li><a href="/features/" class="text-gray-300 hover:text-indigo-400 transition duration-300">Features</a></li>
+                        <li><a href="/contacts/" class="text-indigo-400 font-semibold">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Support</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-300 hover:text-indigo-400 transition duration-300">Help Center</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-indigo-400 transition duration-300">Privacy Policy</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-indigo-400 transition duration-300">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center">
+                <p class="text-gray-300">&copy; 2025 GetSetRide. All rights reserved. Made with ❤️ in India</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenu.classList.toggle('hidden');
+        });
+    </script>
+
+</body>
+</html>

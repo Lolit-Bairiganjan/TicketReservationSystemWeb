@@ -1,0 +1,388 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="WhatsApp Image 2025-08-23 at 11.02.52 PM.jpeg">
+    <title>Features - GetSetRide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .hero-bg {
+            background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.9) 100%);
+            backdrop-filter: blur(10px);
+        }
+        
+        .feature-card {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.9);
+        }
+        
+        .floating-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        /* Navigation Link Gradient Hover Effects */
+        .nav-link-gradient {
+            position: relative;
+            font-weight: 500;
+        }
+        
+        .nav-link-gradient::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(240, 240, 255, 0.95) 50%, rgba(255, 255, 255, 0.9) 100%);
+            opacity: 0;
+            border-radius: 24px;
+            transition: opacity 0.6s ease;
+            z-index: 1;
+        }
+        
+        .nav-link-gradient:hover::before {
+            opacity: 1;
+        }
+        
+        .nav-link-gradient:hover {
+            color: #4338ca;
+        }
+        
+        .nav-link-gradient:hover span {
+            color: #4338ca;
+            font-weight: 600;
+        }
+        
+        /* Mobile menu button gradient hover */
+        #mobile-menu-button:hover {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(240, 240, 255, 0.3) 100%);
+            color: white;
+            border-radius: 24px;
+            padding: 8px;
+            transition: all 0.6s ease;
+        }
+        
+        /* Username Spilled Paint Gradient Effect */
+        .username-paint {
+            position: relative;
+            overflow: hidden;
+            border-radius: 16px;
+        }
+        
+        .username-paint::before {
+            content: '';
+            position: absolute;
+            top: -20%;
+            left: -30%;
+            width: 160%;
+            height: 140%;
+            background: linear-gradient(
+                127deg,
+                rgba(255, 255, 255, 0.25) 0%,
+                rgba(240, 240, 255, 0.35) 25%,
+                rgba(255, 255, 255, 0.3) 45%,
+                rgba(240, 240, 255, 0.28) 65%,
+                rgba(255, 255, 255, 0.32) 80%,
+                transparent 100%
+            );
+            transform: rotate(-15deg) skew(-8deg, -3deg);
+            z-index: 1;
+        }
+        
+        .username-paint::after {
+            content: '';
+            position: absolute;
+            bottom: -15%;
+            right: -25%;
+            width: 120%;
+            height: 100%;
+            background: linear-gradient(
+                45deg,
+                transparent 0%,
+                rgba(255, 255, 255, 0.22) 30%,
+                rgba(240, 240, 255, 0.3) 60%,
+                rgba(255, 255, 255, 0.25) 100%
+            );
+            transform: rotate(25deg) skew(5deg, 8deg);
+            z-index: 1;
+        }
+        
+        .username-paint span {
+            position: relative;
+            z-index: 2;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ffffff 0%, #f0f0ff 50%, #ffffff 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Header & Navigation Bar -->
+    <header class="bg-gradient-to-r from-indigo-600 to-purple-600 shadow-2xl rounded-b-xl border-b-2 border-indigo-200/20">
+        <nav class="container mx-auto px-6 py-4 flex items-center justify-between">
+            <!-- Logo -->
+            <a href="/" class="flex items-center space-x-2">
+                <img src="{% static 'mainApp/icons8-train-100.png' %}" alt="GetSetReady" class="h-10 w-10 mr-4 flex-shrink-0">
+                <span class="text-2xl font-bold bg-gradient-to-r from-indigo-300 to-purple-300 bg-clip-text text-transparent">GetSetRide</span>
+            </a>
+            
+            <!-- Navigation Links -->
+            <div class="hidden md:flex space-x-2">
+                
+                {% if user.is_authenticated %}
+
+                <a href="/" class="nav-link-gradient text-gray-200 px-4 py-2 rounded-lg transition-all duration-300 relative overflow-hidden group">
+                    <span class="relative z-10">Home</span>
+                </a>
+                <a href="/features/" class="nav-link-gradient text-gray-200 px-4 py-2 rounded-lg transition-all duration-300 relative overflow-hidden group bg-white/20">
+                    <span class="relative z-10 text-white font-semibold">Features</span>
+                </a>
+                <a href="/contacts/" class="nav-link-gradient text-gray-200 px-4 py-2 rounded-lg transition-all duration-300 relative overflow-hidden group">
+                    <span class="relative z-10">Contact</span>
+                </a>
+                <div class="username-paint text-gray-200 px-4 py-2">
+                    <span>Welcome, {{ user.username }}</span>
+                </div>
+                <a href="/logout" class="nav-link-gradient text-gray-200 px-4 py-2 rounded-lg transition-all duration-300 relative overflow-hidden group">
+                    <span class="relative z-10">Logout</span>
+                </a>
+                {% else %}
+                
+                <a href="/" class="nav-link-gradient text-gray-200 px-4 py-2 rounded-lg transition-all duration-300 relative overflow-hidden group">
+                    <span class="relative z-10">Home</span>
+                </a>
+                <a href="/features/" class="nav-link-gradient text-gray-200 px-4 py-2 rounded-lg transition-all duration-300 relative overflow-hidden group bg-white/20">
+                    <span class="relative z-10 text-white font-semibold">Features</span>
+                </a>
+                <a href="/contacts/" class="nav-link-gradient text-gray-200 px-4 py-2 rounded-lg transition-all duration-300 relative overflow-hidden group">
+                    <span class="relative z-10">Contact</span>
+                </a>
+                <a href="/login" class="nav-link-gradient text-gray-200 px-4 py-2 rounded-lg transition-all duration-300 relative overflow-hidden group">
+                    <span class="relative z-10">Login</span>
+                </a>
+                {% endif %}
+            </div>
+
+            <!-- Mobile Menu Button -->
+            <div class="md:hidden">
+                <button id="mobile-menu-button" class="text-gray-200 hover:text-white focus:outline-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+            </div>
+        </nav>
+        <!-- Mobile Menu (hidden by default) -->
+        <div id="mobile-menu" class="hidden md:hidden bg-gradient-to-r from-indigo-600 to-purple-600 rounded-b-xl shadow-2xl border-t border-indigo-200/10">
+            <div class="flex flex-col p-4 space-y-2">
+                <a href="/" class="nav-link-gradient block px-4 py-2 text-gray-200 rounded-lg transition-all duration-300 relative overflow-hidden group">
+                    <span class="relative z-10">Home</span>
+                </a>
+                <a href="/features/" class="nav-link-gradient block px-4 py-2 text-white bg-white/20 rounded-lg transition-all duration-300 relative overflow-hidden group">
+                    <span class="relative z-10 font-semibold">Features</span>
+                </a>
+                <a href="/contacts/" class="nav-link-gradient block px-4 py-2 text-gray-200 rounded-lg transition-all duration-300 relative overflow-hidden group">
+                    <span class="relative z-10">Contact</span>
+                </a>
+                <a href="/login" class="nav-link-gradient block px-4 py-2 text-gray-200 rounded-lg transition-all duration-300 relative overflow-hidden group">
+                    <span class="relative z-10">Login</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-bg rounded-xl shadow-2xl mx-4 md:mx-auto max-w-7xl mt-8 py-16 text-center relative overflow-hidden">
+        <!-- Decorative elements -->
+        <div class="absolute top-0 left-0 w-20 h-20 bg-indigo-200 rounded-full opacity-20 floating-animation"></div>
+        <div class="absolute bottom-0 right-0 w-32 h-32 bg-purple-200 rounded-full opacity-20 floating-animation" style="animation-delay: -3s;"></div>
+        
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="mb-6">
+                <span class="inline-block px-4 py-2 bg-indigo-100 text-indigo-600 text-sm font-semibold rounded-full mb-4">
+                    ✨ Powerful Features
+                </span>
+            </div>
+            <h1 class="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-6 leading-tight">
+                Why Choose GetSetRide?
+            </h1>
+            <p class="text-xl md:text-2xl text-gray-700 mb-10 max-w-4xl mx-auto leading-relaxed">
+                Discover the powerful features that make us India's most trusted railway booking platform.
+            </p>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-20 bg-gradient-to-r from-blue-50 to-indigo-100">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+                
+                <!-- Feature 1: Effortless Booking -->
+                <div class="bg-white/80 backdrop-blur-md p-8 rounded-2xl shadow-xl hover:shadow-2xl text-center transform hover:scale-105 transition duration-500 border border-white/20">
+                    <div class="bg-gradient-to-r from-indigo-500 to-purple-600 p-4 rounded-full w-20 h-20 mx-auto mb-6 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">⚡ Effortless Booking</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Our intuitive interface allows you to book tickets in minutes, with real-time availability and comprehensive fare details at your fingertips.
+                    </p>
+                </div>
+
+                <!-- Feature 2: Secure Payments -->
+                <div class="bg-white/80 backdrop-blur-md p-8 rounded-2xl shadow-xl hover:shadow-2xl text-center transform hover:scale-105 transition duration-500 border border-white/20">
+                    <div class="bg-gradient-to-r from-green-500 to-teal-600 p-4 rounded-full w-20 h-20 mx-auto mb-6 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.955a11.955 11.955 0 018.382 3.029m-5.618-4.016l-4.717 11.536M4.382 6.014A11.955 11.955 0 0012 21.045a11.955 11.955 0 007.618-2.992" />
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">🔒 Secure & Transparent</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Enjoy complete peace of mind with our military-grade secure payment gateway and transparent pricing. No hidden fees, ever.
+                    </p>
+                </div>
+
+                <!-- Feature 3: Real-time Updates -->
+                <div class="bg-white/80 backdrop-blur-md p-8 rounded-2xl shadow-xl hover:shadow-2xl text-center transform hover:scale-105 transition duration-500 border border-white/20">
+                    <div class="bg-gradient-to-r from-orange-500 to-red-600 p-4 rounded-full w-20 h-20 mx-auto mb-6 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">📱 Real-time Updates</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Stay informed with instant notifications about train schedules, platform changes, and booking confirmations delivered directly to your device.
+                    </p>
+                </div>
+
+                <!-- Feature 4: Multi-language Support -->
+                <div class="bg-white/80 backdrop-blur-md p-8 rounded-2xl shadow-xl hover:shadow-2xl text-center transform hover:scale-105 transition duration-500 border border-white/20">
+                    <div class="bg-gradient-to-r from-purple-500 to-pink-600 p-4 rounded-full w-20 h-20 mx-auto mb-6 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">🌐 Multi-language Support</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Book tickets in your preferred language with support for Hindi, English, and 10+ regional languages across India.
+                    </p>
+                </div>
+
+                <!-- Feature 5: 24/7 Customer Support -->
+                <div class="bg-white/80 backdrop-blur-md p-8 rounded-2xl shadow-xl hover:shadow-2xl text-center transform hover:scale-105 transition duration-500 border border-white/20">
+                    <div class="bg-gradient-to-r from-blue-500 to-indigo-600 p-4 rounded-full w-20 h-20 mx-auto mb-6 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192L5.636 18.364M12 2.25a9.75 9.75 0 100 19.5 9.75 9.75 0 000-19.5z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">🎧 24/7 Customer Support</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Get instant help anytime with our round-the-clock customer support team, available via chat, phone, and email.
+                    </p>
+                </div>
+
+                <!-- Feature 6: Smart Recommendations -->
+                <div class="bg-white/80 backdrop-blur-md p-8 rounded-2xl shadow-xl hover:shadow-2xl text-center transform hover:scale-105 transition duration-500 border border-white/20">
+                    <div class="bg-gradient-to-r from-yellow-500 to-orange-600 p-4 rounded-full w-20 h-20 mx-auto mb-6 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">🧠 Smart Recommendations</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        AI-powered suggestions for optimal routes, travel times, and seat preferences based on your booking history and preferences.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action Section -->
+    <section class="py-20 bg-gradient-to-r from-indigo-600 to-purple-700">
+        <div class="container mx-auto px-6 text-center">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-4xl md:text-5xl font-bold text-white mb-6">
+                    Ready to Experience These Features? 🚄
+                </h2>
+                <p class="text-xl text-indigo-100 mb-10 leading-relaxed">
+                    Join millions of satisfied travelers and discover why GetSetRide is India's preferred railway booking platform.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-6 justify-center items-center">
+                    <a href="/" 
+                       class="inline-block px-12 py-6 text-xl font-bold text-indigo-600 bg-white rounded-full shadow-2xl hover:shadow-3xl transform hover:scale-110 transition duration-300 hover:bg-gray-50">
+                        🏠 Back to Home
+                    </a>
+                    <a href="/contacts/" 
+                       class="inline-block px-12 py-6 text-xl font-semibold text-white border-2 border-white rounded-full hover:bg-white hover:text-indigo-600 transition duration-300">
+                        Contact Support
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="col-span-1 md:col-span-2">
+                    <h3 class="text-2xl font-bold mb-4 bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
+                        GetSetRide
+                    </h3>
+                    <p class="text-gray-300 mb-4 leading-relaxed">
+                        India's most trusted railway booking platform. Making train travel easy, convenient, and delightful for everyone.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="/" class="text-gray-300 hover:text-indigo-400 transition duration-300">Home</a></li>
+                        <li><a href="/features/" class="text-indigo-400 font-semibold">Features</a></li>
+                        <li><a href="/contacts/" class="text-gray-300 hover:text-indigo-400 transition duration-300">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Support</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-300 hover:text-indigo-400 transition duration-300">Help Center</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-indigo-400 transition duration-300">Privacy Policy</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-indigo-400 transition duration-300">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center">
+                <p class="text-gray-300">&copy; 2025 GetSetRide. All rights reserved. Made with ❤️ in India</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenu.classList.toggle('hidden');
+        });
+    </script>
+
+</body>
+</html>

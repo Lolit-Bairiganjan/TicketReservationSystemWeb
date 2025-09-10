@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="WhatsApp Image 2025-08-23 at 11.02.52 PM.jpeg">
+    <title>Sign Up - GetSetRide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .signup-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            padding: 2rem 1rem;
+        }
+        
+        .signup-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="20" cy="20" r="1" fill="white" opacity="0.1"/><circle cx="60" cy="50" r="0.5" fill="white" opacity="0.1"/><circle cx="90" cy="80" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            pointer-events: none;
+        }
+        
+        .floating-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="signup-bg">
+        <!-- Decorative elements -->
+        <div class="absolute top-10 left-10 w-20 h-20 bg-white/10 rounded-full floating-animation"></div>
+        <div class="absolute bottom-10 right-10 w-32 h-32 bg-white/10 rounded-full floating-animation" style="animation-delay: -3s;"></div>
+        <div class="absolute top-1/2 right-20 w-16 h-16 bg-white/10 rounded-full floating-animation" style="animation-delay: -1.5s;"></div>
+        <div class="absolute top-20 left-1/3 w-24 h-24 bg-white/10 rounded-full floating-animation" style="animation-delay: -4s;"></div>
+        
+        <div class="bg-white/90 backdrop-blur-md p-10 rounded-2xl shadow-2xl w-full max-w-lg transform transition duration-500 ease-in-out border border-white/20">
+            <div class="text-center mb-8">
+                <div class="mb-4">
+                    <span class="inline-block px-4 py-2 bg-indigo-100 text-indigo-600 text-sm font-semibold rounded-full">
+                        🎉 Join GetSetRide
+                    </span>
+                </div>
+                <h2 class="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-4">
+                    Create Your Account
+                </h2>
+                <p class="text-gray-600 leading-relaxed">
+                    Join thousands of travelers who trust us for their train journeys.
+                </p>
+            </div>
+
+            <form class="space-y-6">
+                <div>
+                    <label for="username" class="block text-gray-700 text-sm font-semibold mb-3">Username</label>
+                    <input type="text" id="username" name="username" 
+                           class="w-full px-4 py-4 rounded-xl bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-300" 
+                           placeholder="Choose a unique username" required>
+                </div>
+                
+                <div>
+                    <label for="email" class="block text-gray-700 text-sm font-semibold mb-3">Email Address</label>
+                    <input type="email" id="email" name="email" 
+                           class="w-full px-4 py-4 rounded-xl bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-300" 
+                           placeholder="Enter your email address" required>
+                </div>
+                
+                <div>
+                    <label for="password" class="block text-gray-700 text-sm font-semibold mb-3">Password</label>
+                    <input type="password" id="password" name="password" 
+                           class="w-full px-4 py-4 rounded-xl bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-300" 
+                           placeholder="Create a strong password" required>
+                </div>
+                
+                <div>
+                    <label for="confirm-password" class="block text-gray-700 text-sm font-semibold mb-3">Confirm Password</label>
+                    <input type="password" id="confirm-password" name="confirm_password" 
+                           class="w-full px-4 py-4 rounded-xl bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-300" 
+                           placeholder="Retype your password" required>
+                </div>
+                
+                <!-- Terms and Conditions -->
+                <div class="flex items-start space-x-3">
+                    <input type="checkbox" id="terms" name="terms" 
+                           class="mt-1 w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500" required>
+                    <label for="terms" class="text-sm text-gray-600 leading-relaxed">
+                        I agree to the <a href="#" class="text-indigo-600 hover:underline font-semibold">Terms of Service</a> 
+                        and <a href="#" class="text-indigo-600 hover:underline font-semibold">Privacy Policy</a>
+                    </label>
+                </div>
+                
+                <button type="submit" 
+                        class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold py-4 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-300">
+                    🎫 Create Account
+                </button>
+            </form>
+
+            <div class="text-center mt-8 pt-6 border-t border-gray-200">
+                <p class="text-sm text-gray-600 mb-4">
+                    Already have an account? 
+                    <a href="{% url 'login_page' %}" class="text-indigo-600 font-semibold hover:underline">
+                        Login Here
+                    </a>
+                </p>
+                
+                <a href="/" 
+                   class="inline-block px-8 py-3 text-sm font-semibold text-indigo-600 border-2 border-indigo-600 rounded-full hover:bg-indigo-600 hover:text-white transition duration-300 transform hover:scale-105">
+                    🏠 Back to Home
+                </a>
+            </div>
+            
+            <!-- Benefits Section -->
+            <div class="mt-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-indigo-100">
+                <h4 class="text-sm font-semibold text-indigo-800 mb-3 text-center">Why Join GetSetRide?</h4>
+                <div class="grid grid-cols-2 gap-3 text-xs text-indigo-700">
+                    <div class="flex items-center space-x-2">
+                        <span>⚡</span>
+                        <span>Lightning Fast Booking</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span>🔒</span>
+                        <span>100% Secure Payments</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span>📱</span>
+                        <span>Mobile Tickets</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span>🎁</span>
+                        <span>Exclusive Offers</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="WhatsApp Image 2025-08-23 at 11.02.52 PM.jpeg">
+    <title>Available Trains - GetSetRide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .train-card {
+            transition: all 0.3s ease;
+        }
+        .train-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold text-center text-gray-800 mb-2">Available Trains</h1>
+        <p class="text-center text-gray-500 mb-8" id="route-info">Searching trains for your route...</p>
+        
+        <div id="trains-container" class="grid grid-cols-1 gap-6 max-w-4xl mx-auto">
+            <!-- Train cards will be dynamically inserted here -->
+        </div>
+        
+        <div class="text-center mt-8">
+            <a href="Book_Your_Ticket_Now.html" class="inline-block bg-indigo-600 text-white font-bold py-3 px-6 rounded-full hover:bg-indigo-700 transition duration-300">
+                ← Back to Search
+            </a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const fromStation = urlParams.get('from_station') || '';
+            const toStation = urlParams.get('to_station') || '';
+            const journeyDate = urlParams.get('journey_date') || '';
+            const travelClass = urlParams.get('class') || '';
+            const passengers = urlParams.get('passengers') || '1';
+            
+            // Update route info
+            document.getElementById('route-info').textContent = `From ${fromStation} to ${toStation} on ${journeyDate}`;
+            
+            // Define available trains with their routes
+            const trains = [
+                {
+                    name: "Rajdhani Express",
+                    number: "12309",
+                    from: "New Delhi",
+                    to: "Howrah",
+                    departure: "16:55",
+                    arrival: "09:50",
+                    duration: "16h 55m",
+                    classes: ["AC1", "AC2", "AC3"],
+                    runsOn: ["Daily"]
+                },
+                {
+                    name: "Gatiman Express",
+                    number: "12050",
+                    from: "New Delhi",
+                    to: "Howrah",
+                    departure: "08:30",
+                    arrival: "22:45",
+                    duration: "14h 15m",
+                    classes: ["AC1", "AC2"],
+                    runsOn: ["Daily"]
+                },
+                {
+                    name: "Duronto Express",
+                    number: "12259",
+                    from: "New Delhi",
+                    to: "Howrah",
+                    departure: "20:40",
+                    arrival: "10:30",
+                    duration: "13h 50m",
+                    classes: ["AC2", "AC3", "SL"],
+                    runsOn: ["Daily"]
+                },
+                {
+                    name: "Rajdhani Express",
+                    number: "12310",
+                    from: "Howrah",
+                    to: "New Delhi",
+                    departure: "16:55",
+                    arrival: "09:50",
+                    duration: "16h 55m",
+                    classes: ["AC1", "AC2", "AC3"],
+                    runsOn: ["Daily"]
+                },
+                {
+                    name: "Gatiman Express",
+                    number: "12049",
+                    from: "Howrah",
+                    to: "New Delhi",
+                    departure: "08:30",
+                    arrival: "22:45",
+                    duration: "14h 15m",
+                    classes: ["AC1", "AC2"],
+                    runsOn: ["Daily"]
+                },
+                {
+                    name: "Duronto Express",
+                    number: "12260",
+                    from: "Howrah",
+                    to: "New Delhi",
+                    departure: "20:40",
+                    arrival: "10:30",
+                    duration: "13h 50m",
+                    classes: ["AC2", "AC3", "SL"],
+                    runsOn: ["Daily"]
+                },
+                {
+                    name: "Rajdhani Express",
+                    number: "22221",
+                    from: "Chhatrapati Shivaji Terminus",
+                    to: "Howrah",
+                    departure: "17:10",
+                    arrival: "10:45",
+                    duration: "17h 35m",
+                    classes: ["AC1", "AC2", "AC3"],
+                    runsOn: ["Daily"]
+                },
+                {
+                    name: "Duronto Express",
+                    number: "22211",
+                    from: "Chhatrapati Shivaji Terminus",
+                    to: "Howrah",
+                    departure: "23:00",
+                    arrival: "16:30",
+                    duration: "17h 30m",
+                    classes: ["AC2", "AC3", "SL"],
+                    runsOn: ["Daily"]
+                },
+                {
+                    name: "Rajdhani Express",
+                    number: "22222",
+                    from: "Howrah",
+                    to: "Chhatrapati Shivaji Terminus",
+                    departure: "17:10",
+                    arrival: "10:45",
+                    duration: "17h 35m",
+                    classes: ["AC1", "AC2", "AC3"],
+                    runsOn: ["Daily"]
+                },
+                {
+                    name: "Duronto Express",
+                    number: "22212",
+                    from: "Howrah",
+                    to: "Chhatrapati Shivaji Terminus",
+                    departure: "23:00",
+                    arrival: "16:30",
+                    duration: "17h 30m",
+                    classes: ["AC2", "AC3", "SL"],
+                    runsOn: ["Daily"]
+                },
+                {
+                    name: "Rajdhani Express",
+                    number: "22223",
+                    from: "New Delhi",
+                    to: "Chhatrapati Shivaji Terminus",
+                    departure: "16:25",
+                    arrival: "08:15",
+                    duration: "15h 50m",
+                    classes: ["AC1", "AC2", "AC3"],
+                    runsOn: ["Daily"]
+                },
+                {
+                    name: "Duronto Express",
+                    number: "22213",
+                    from: "New Delhi",
+                    to: "Chhatrapati Shivaji Terminus",
+                    departure: "11:50",
+                    arrival: "05:30",
+                    duration: "17h 40m",
+                    classes: ["AC2", "AC3", "SL"],
+                    runsOn: ["Daily"]
+                },
+                {
+                    name: "Rajdhani Express",
+                    number: "22224",
+                    from: "Chhatrapati Shivaji Terminus",
+                    to: "New Delhi",
+                    departure: "16:25",
+                    arrival: "08:15",
+                    duration: "15h 50m",
+                    classes: ["AC1", "AC2", "AC3"],
+                    runsOn: ["Daily"]
+                },
+                {
+                    name: "Duronto Express",
+                    number: "22214",
+                    from: "Chhatrapati Shivaji Terminus",
+                    to: "New Delhi",
+                    departure: "11:50",
+                    arrival: "05:30",
+                    duration: "17h 40m",
+                    classes: ["AC2", "AC3", "SL"],
+                    runsOn: ["Daily"]
+                },
+                {
+                    name: "Shatabdi Express",
+                    number: "12028",
+                    from: "Chhatrapati Shivaji Terminus",
+                    to: "Bengaluru Cantonment",
+                    departure: "06:15",
+                    arrival: "17:30",
+                    duration: "11h 15m",
+                    classes: ["CC", "AC3"],
+                    runsOn: ["Daily"]
+                },
+                {
+                    name: "Udyan Express",
+                    number: "11302",
+                    from: "Chhatrapati Shivaji Terminus",
+                    to: "Bengaluru Cantonment",
+                    departure: "21:00",
+                    arrival: "13:30",
+                    duration: "16h 30m",
+                    classes: ["AC2", "AC3", "SL"],
+                    runsOn: ["Daily"]
+                },
+                {
+                    name: "Shatabdi Express",
+                    number: "12027",
+                    from: "Bengaluru Cantonment",
+                    to: "Chhatrapati Shivaji Terminus",
+                    departure: "06:15",
+                    arrival: "17:30",
+                    duration: "11h 15m",
+                    classes: ["CC", "AC3"],
+                    runsOn: ["Daily"]
+                },
+                {
+                    name: "Udyan Express",
+                    number: "11301",
+                    from: "Bengaluru Cantonment",
+                    to: "Chhatrapati Shivaji Terminus",
+                    departure: "21:00",
+                    arrival: "13:30",
+                    duration: "16h 30m",
+                    classes: ["AC2", "AC3", "SL"],
+                    runsOn: ["Daily"]
+                },
+                {
+                    name: "Sangamitra Express",
+                    number: "12296",
+                    from: "Bengaluru Cantonment",
+                    to: "Howrah",
+                    departure: "20:30",
+                    arrival: "06:45",
+                    duration: "34h 15m",
+                    classes: ["AC2", "AC3", "SL"],
+                    runsOn: ["Daily"]
+                },
+                {
+                    name: "Sangamitra Express",
+                    number: "12295",
+                    from: "Howrah",
+                    to: "Bengaluru Cantonment",
+                    departure: "20:30",
+                    arrival: "06:45",
+                    duration: "34h 15m",
+                    classes: ["AC2", "AC3", "SL"],
+                    runsOn: ["Daily"]
+                },
+                {
+                    name: "Rajdhani Express",
+                    number: "12434",
+                    from: "Bengaluru Cantonment",
+                    to: "New Delhi",
+                    departure: "20:00",
+                    arrival: "07:30",
+                    duration: "35h 30m",
+                    classes: ["AC1", "AC2", "AC3"],
+                    runsOn: ["Daily"]
+                },
+                {
+                    name: "Rajdhani Express",
+                    number: "12433",
+                    from: "New Delhi",
+                    to: "Bengaluru Cantonment",
+                    departure: "20:00",
+                    arrival: "07:30",
+                    duration: "35h 30m",
+                    classes: ["AC1", "AC2", "AC3"],
+                    runsOn: ["Daily"]
+                },
+                {
+                    name: "Tamil Nadu Express",
+                    number: "12622",
+                    from: "New Delhi",
+                    to: "Madras",
+                    departure: "22:30",
+                    arrival: "07:45",
+                    duration: "33h 15m",
+                    classes: ["AC1", "AC2", "AC3", "SL"],
+                    runsOn: ["Daily"]
+                },
+                {
+                    name: "Tamil Nadu Express",
+                    number: "12621",
+                    from: "Madras",
+                    to: "New Delhi",
+                    departure: "22:30",
+                    arrival: "07:45",
+                    duration: "33h 15m",
+                    classes: ["AC1", "AC2", "AC3", "SL"],
+                    runsOn: ["Daily"]
+                },
+                {
+                    name: "Dadar Express",
+                    number: "11044",
+                    from: "Chhatrapati Shivaji Terminus",
+                    to: "Madras",
+                    departure: "15:45",
+                    arrival: "06:30",
+                    duration: "38h 45m",
+                    classes: ["AC2", "AC3", "SL"],
+                    runsOn: ["Daily"]
+                },
+                {
+                    name: "Dadar Express",
+                    number: "11043",
+                    from: "Madras",
+                    to: "Chhatrapati Shivaji Terminus",
+                    departure: "15:45",
+                    arrival: "06:30",
+                    duration: "38h 45m",
+                    classes: ["AC2", "AC3", "SL"],
+                    runsOn: ["Daily"]
+                },
+                {
+                    name: "Coromandel Express",
+                    number: "12842",
+                    from: "Madras",
+                    to: "Howrah",
+                    departure: "14:30",
+                    arrival: "04:15",
+                    duration: "25h 45m",
+                    classes: ["AC2", "AC3", "SL"],
+                    runsOn: ["Daily"]
+                },
+                {
+                    name: "Coromandel Express",
+                    number: "12841",
+                    from: "Howrah",
+                    to: "Madras",
+                    departure: "14:30",
+                    arrival: "04:15",
+                    duration: "25h 45m",
+                    classes: ["AC2", "AC3", "SL"],
+                    runsOn: ["Daily"]
+                },
+                {
+                    name: "Shatabdi Express",
+                    number: "12028",
+                    from: "Madras",
+                    to: "Bengaluru Cantonment",
+                    departure: "06:00",
+                    arrival: "10:45",
+                    duration: "4h 45m",
+                    classes: ["CC"],
+                    runsOn: ["Daily"]
+                },
+                {
+                    name: "Brindavan Express",
+                    number: "12640",
+                    from: "Madras",
+                    to: "Bengaluru Cantonment",
+                    departure: "15:00",
+                    arrival: "21:30",
+                    duration: "6h 30m",
+                    classes: ["AC2", "AC3", "SL"],
+                    runsOn: ["Daily"]
+                },
+                {
+                    name: "Shatabdi Express",
+                    number: "12027",
+                    from: "Bengaluru Cantonment",
+                    to: "Madras",
+                    departure: "06:00",
+                    arrival: "10:45",
+                    duration: "4h 45m",
+                    classes: ["CC"],
+                    runsOn: ["Daily"]
+                },
+                {
+                    name: "Brindavan Express",
+                    number: "12639",
+                    from: "Bengaluru Cantonment",
+                    to: "Madras",
+                    departure: "15:00",
+                    arrival: "21:30",
+                    duration: "6h 30m",
+                    classes: ["AC2", "AC3", "SL"],
+                    runsOn: ["Daily"]
+                }
+            ];
+
+            // Filter trains based on from and to stations
+            const filteredTrains = trains.filter(train => 
+                train.from.toLowerCase().includes(fromStation.toLowerCase()) && 
+                train.to.toLowerCase().includes(toStation.toLowerCase())
+            );
+
+            const trainsContainer = document.getElementById('trains-container');
+            
+            if (filteredTrains.length === 0) {
+                trainsContainer.innerHTML = `
+                    <div class="bg-white p-8 rounded-xl shadow text-center">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">No trains found</h3>
+                        <p class="text-gray-600">We couldn't find any trains for your selected route. Please try a different route or check back later.</p>
+                    </div>
+                `;
+            } else {
+                filteredTrains.forEach(train => {
+                    const isClassAvailable = train.classes.includes(travelClass);
+                    
+                    const trainCard = document.createElement('div');
+                    trainCard.className = 'train-card bg-white p-6 rounded-xl shadow';
+                    trainCard.innerHTML = `
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-800">${train.name}</h3>
+                                <p class="text-gray-600">Train No: ${train.number}</p>
+                            </div>
+                            <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">${train.runsOn[0]}</span>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <p class="text-gray-500 text-sm">Departure</p>
+                                <p class="font-semibold">${train.departure}</p>
+                                <p class="text-sm">${train.from}</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-500 text-sm">Arrival</p>
+                                <p class="font-semibold">${train.arrival}</p>
+                                <p class="text-sm">${train.to}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-gray-700">Duration: ${train.duration}</span>
+                            <span class="text-gray-700">Available Classes: ${train.classes.join(', ')}</span>
+                        </div>
+                        
+                        <div class="flex justify-between items-center">
+                            <span class="text-lg font-bold text-indigo-600">₹${Math.floor(500 + Math.random() * 2000)}</span>
+                            ${isClassAvailable ? 
+                                `<button class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg transition duration-300 book-btn" data-train="${train.name}" data-number="${train.number}">
+                                    Book Now
+                                </button>` : 
+                                `<span class="text-red-500 font-medium">Class not available</span>`
+                            }
+                        </div>
+                    `;
+                    
+                    trainsContainer.appendChild(trainCard);
+                });
+                
+                // Add event listeners to book buttons
+                document.querySelectorAll('.book-btn').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const trainName = this.getAttribute('data-train');
+                        const trainNumber = this.getAttribute('data-number');
+                        window.location.href = `payment.html?from=${encodeURIComponent(fromStation)}&to=${encodeURIComponent(toStation)}&date=${encodeURIComponent(journeyDate)}&class=${encodeURIComponent(travelClass)}&passengers=${encodeURIComponent(passengers)}&trainName=${encodeURIComponent(trainName)}&trainNumber=${encodeURIComponent(trainNumber)}`;
+                        // In a real application, this would redirect to a booking page
+                    });
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>
