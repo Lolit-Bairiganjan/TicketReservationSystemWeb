@@ -23,9 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-r9)8o#!+^0rz9(*xxhhl!c4+!z&31s$5=s-&96!cn1e-njzji1'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'your-domain.com']  # Add your domain
 
 
 # Application definition
@@ -122,7 +122,12 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = '/home/lolit/Documents/Code/Python/LearnDjango/DemoProject/static/'
+
+# Media files
+MEDIA_URL = '/media/'
+MEDIA_ROOT = '/home/lolit/Documents/Code/Python/LearnDjango/DemoProject/media/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
