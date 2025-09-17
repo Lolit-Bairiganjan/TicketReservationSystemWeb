@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="WhatsApp Image 2025-08-23 at 11.02.52 PM.jpeg">
+    <title>Check PNR Status</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="bg-white shadow-md rounded-b-xl">
+        <nav class="container mx-auto px-6 py-4 flex items-center justify-between">
+            <a href="home.html" class="flex items-center space-x-2">
+                <img src="WhatsApp Image 2025-08-23 at 11.02.52 PM.jpeg" alt="GetSetRide" class="h-10 w-10 mr-4 flex-shrink-0">
+                <span class="text-2xl font-bold text-gray-800">GetSetRide</span>
+            </a>
+            
+            <div class="hidden md:flex space-x-8">
+                <a href="home.html" class="text-gray-600 hover:text-indigo-600 transition duration-300">Home</a>
+                <a href="features.html" class="text-gray-600 hover:text-indigo-600 transition duration-300">Features</a>
+                <a href="contact.html" class="text-gray-600 hover:text-indigo-600 transition duration-300">Contact</a>
+                <a href="login.html" class="text-gray-600 hover:text-indigo-600 transition duration-300">Login</a>
+            </div>
+
+            <div class="md:hidden">
+                <button id="mobile-menu-button" class="text-gray-600 hover:text-indigo-600 focus:outline-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+            </div>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden bg-white rounded-b-xl shadow-lg">
+            <div class="flex flex-col p-4 space-y-2">
+                <a href="home.html" class="block px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg">Home</a>
+                <a href="features.html" class="block px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg">Features</a>
+                <a href="contact.html" class="block px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg">Contact</a>
+                <a href="login.html" class="block px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg">Login</a>
+            </div>
+        </div>
+    </header>
+
+    <section class="flex items-center justify-center min-h-[calc(100vh-160px)] py-12">
+        <div class="bg-white rounded-xl shadow-lg p-8 w-full max-w-md mx-4">
+            <h2 class="text-3xl font-bold text-gray-800 text-center mb-6">Check PNR Status</h2>
+            <p class="text-gray-600 text-center mb-8">Enter your 10-digit PNR number to get the latest status of your ticket.</p>
+            
+            <form action="#" method="POST" onsubmit="handlePNRCheck(event)">
+                <div class="mb-6">
+                    <label for="pnr" class="block text-gray-700 font-semibold mb-2">PNR Number</label>
+                    <input type="text" id="pnr" name="pnr" class="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:outline-none focus:border-indigo-500 transition duration-300" placeholder="Enter your 10-digit PNR" required pattern="[0-9]{10}" title="PNR number must be 10 digits">
+                </div>
+                
+                <button type="submit" class="w-full px-4 py-3 text-lg font-semibold text-white bg-indigo-600 rounded-lg shadow-lg hover:bg-indigo-700 transition duration-300">
+                    Get Status
+                </button>
+            </form>
+
+            <div id="pnr-result" class="mt-8 hidden">
+                <div class="bg-gray-100 p-6 rounded-lg shadow-inner">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">Status Details</h3>
+                    <div class="space-y-3 text-gray-700">
+                        <p><strong>Train Number:</strong> <span id="train-number"></span></p>
+                        <p><strong>Train Name:</strong> <span id="train-name"></span></p>
+                        <p><strong>From:</strong> <span id="from-station"></span></p>
+                        <p><strong>To:</strong> <span id="to-station"></span></p>
+                        <p><strong>Journey Date:</strong> <span id="journey-date"></span></p>
+                        <p><strong>Booking Status:</strong> <span id="booking-status"></span></p>
+                        <p><strong>Current Status:</strong> <span id="current-status" class="font-bold text-green-600"></span></p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="pnr-error" class="mt-8 hidden">
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                    <strong class="font-bold">Error!</strong>
+                    <span class="block sm:inline" id="error-message"></span>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <footer class="bg-white rounded-t-xl shadow-md py-8">
+        <div class="container mx-auto px-6 text-center text-gray-600">
+            <p>&copy; 2025 GetSetRide. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // This is a placeholder function. In a real application, you would make an API call here.
+        function handlePNRCheck(event) {
+            event.preventDefault(); // Prevent the form from submitting normally
+
+            const pnrInput = document.getElementById('pnr');
+            const pnr = pnrInput.value;
+            const resultDiv = document.getElementById('pnr-result');
+            const errorDiv = document.getElementById('pnr-error');
+            const errorMessageSpan = document.getElementById('error-message');
+
+            // Hide previous results/errors
+            resultDiv.classList.add('hidden');
+            errorDiv.classList.add('hidden');
+
+            // Basic validation
+            if (pnr.length !== 10 || isNaN(pnr)) {
+                errorMessageSpan.textContent = 'Please enter a valid 10-digit PNR number.';
+                errorDiv.classList.remove('hidden');
+                return;
+            }
+
+            // Simulate an API call with a delay
+            console.log(`Checking PNR status for: ${pnr}`);
+
+            // Replace this with a real API call (e.g., using fetch() or axios)
+            // Example of a successful response (you'd get this from your backend)
+            const mockSuccessData = {
+                trainNumber: '1234567890',
+                trainName: 'Rajdhani Express',
+                from: 'Howrah (HWH)',
+                to: 'New Delhi (NDLS)',
+                journeyDate: '25-12-2025',
+                bookingStatus: 'W/L 100, W/L 50',
+                currentStatus: 'Confirmed (CNF)',
+            };
+            
+            // Example of a failed response
+            const mockErrorData = {
+                message: 'Invalid PNR number or no information found.',
+            };
+
+            // This simulates fetching data. In a real app, you'd use a try/catch block for the fetch call.
+            setTimeout(() => {
+                if (pnr === '1234567890') { // Using a specific PNR for a mock success case
+                    document.getElementById('train-number').textContent = mockSuccessData.trainNumber;
+                    document.getElementById('train-name').textContent = mockSuccessData.trainName;
+                    document.getElementById('from-station').textContent = mockSuccessData.from;
+                    document.getElementById('to-station').textContent = mockSuccessData.to;
+                    document.getElementById('journey-date').textContent = mockSuccessData.journeyDate;
+                    document.getElementById('booking-status').textContent = mockSuccessData.bookingStatus;
+                    document.getElementById('current-status').textContent = mockSuccessData.currentStatus;
+                    resultDiv.classList.remove('hidden');
+                } else {
+                    errorMessageSpan.textContent = mockErrorData.message;
+                    errorDiv.classList.remove('hidden');
+                }
+            }, 1000); // 1-second delay to simulate network latency
+        }
+    </script>
+</body>
+</html>

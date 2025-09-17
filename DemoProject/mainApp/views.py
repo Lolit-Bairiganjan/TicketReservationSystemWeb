@@ -9,7 +9,7 @@ def check_login(requested_view):
         if not request.user.is_authenticated:
             messages.warning(request, "You need to login first to access this content.")
             return redirect('login_page')
-        result = requested_view(*args, **kwargs)
+        result = requested_view(request, *args, **kwargs)
         return result
     return login_wrapper
 
@@ -67,4 +67,7 @@ def register_user(request):
 
         messages.success(request, "Account created successfully!")
         return redirect("login_page")
-    
+
+@check_login
+def check_pnr_status(request):
+    return render(request, 'pnr_status.html')

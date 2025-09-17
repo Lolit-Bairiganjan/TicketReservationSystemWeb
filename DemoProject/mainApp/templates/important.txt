@@ -1,1 +1,0 @@
-alert(`Booking ${trainName} (${trainNumber}) for ${passengers} passenger(s) in ${travelClass} class.`);
