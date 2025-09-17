@@ -4,6 +4,15 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 
 # Create your views here.
+def check_login(requested_view):
+    def login_wrapper(request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            messages.warning(request, "You need to login first to access this content.")
+            return redirect('login_page')
+        result = requested_view(*args, **kwargs)
+        return result
+    return login_wrapper
+
 def main_page(request):
     return render(request, 'home.html')
 
@@ -58,3 +67,4 @@ def register_user(request):
 
         messages.success(request, "Account created successfully!")
         return redirect("login_page")
+    
