@@ -77,7 +77,7 @@
                 </p>
             </div>
 
-            <form method='POST' action="{% url 'login_user' %}">
+            <form method='POST' action="{% url 'login_user' %}?next={{ request.GET.next }}">
                 {% csrf_token %}
                 <div class="mb-6">
                     <label for="username" class="block text-gray-700 text-sm font-semibold mb-3">Username</label>

@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+from django.utils.http import urlencode
+from django.urls import reverse
 from django.contrib.auth.models import User
 
 # Create your views here.
@@ -8,7 +10,8 @@ def check_login(requested_view):
     def login_wrapper(request, *args, **kwargs):
         if not request.user.is_authenticated:
             messages.warning(request, "You need to login first to access this content.")
-            return redirect('login_page')
+            params = urlencode({'next': request.path})
+            return redirect(f"{reverse('login_page')}?{params}")
         result = requested_view(request, *args, **kwargs)
         return result
     return login_wrapper
@@ -27,6 +30,9 @@ def login_user(request):
         if user is not None:
             login(request, user)
             messages.success(request, "You're successfully logged in.")
+            next_url = request.GET.get('next')
+            if next_url:
+                return redirect(next_url)
             return redirect('main_page')
         else:
             messages.error(request, "Login failed. Try again.")
