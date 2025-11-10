@@ -4,22 +4,25 @@
 
 ### *Your Journey Begins Here* ✨
 
-[![Django](https://img.shields.io/badge/Django-5.1.3-green.svg)](https://www.djangoproject.com/)
-[![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/)
-[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Status](https://img.shields.io/badge/Status-Active-success.svg)]()
+[![Django](https://img.shields.io/badge/Django-5.1.3-092E20?style=for-the-badge&logo=django&logoColor=white)](https://www.djangoproject.com/)
+[![Python](https://img.shields.io/badge/Python-3.8+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![SQLite](https://img.shields.io/badge/SQLite-07405E?style=for-the-badge&logo=sqlite&logoColor=white)](https://www.sqlite.org/)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
 
 *A comprehensive, feature-rich Django web application for seamless railway ticket booking and management*
 
-[Features](#-features) • [Installation](#-installation) • [Usage](#-usage) • [Documentation](#-database-models) • [Contributing](#-contributing)
+[Features](#-features) • [Installation](#-installation) • [Usage](#-usage-guide) • [Documentation](#-database-models) • [Contributing](#-contributing)
 
 ---
+
+![Railway Booking Banner](https://via.placeholder.com/1200x400/667eea/ffffff?text=GetSetRide+-+Your+Journey+Awaits)
 
 </div>
 
 ## 🌟 Overview
 
-Welcome to the **Railway Ticket Reservation System** - a modern, full-featured web application that brings the convenience of online railway booking to your fingertips. Built with Django and designed with user experience in mind, this system handles everything from train searches to berth allocation with Indian Railways standards.
+Welcome to **GetSetRide** - A modern, full-featured railway ticket reservation system built with Django. Experience the convenience of online railway booking with intelligent seat allocation, real-time availability tracking, and comprehensive journey management.
 
 <div align="center">
 
@@ -39,12 +42,13 @@ Welcome to the **Railway Ticket Reservation System** - a modern, full-featured w
 - 🔐 **Secure Authentication**
   - Login/Logout with session management
   - Password encryption & validation
+  - CSRF protection
 - 📝 **User Registration**
   - Quick signup process
-  - Email validation
+  - Form validation
 - 🛡️ **Access Control**
   - Login-protected booking system
-  - Role-based permissions
+  - Decorator-based route protection
 
 </td>
 <td width="50%">
@@ -53,42 +57,89 @@ Welcome to the **Railway Ticket Reservation System** - a modern, full-featured w
 - 🔍 **Smart Search**
   - Search by route & date
   - Real-time availability
-- 👥 **Multi-Passenger**
+  - Dynamic schedule display
+- 👥 **Multi-Passenger Booking**
   - Book up to 6 passengers
   - Group booking support
+  - Individual passenger details
 - 🪑 **Berth Preference**
   - Lower/Middle/Upper berths
   - Side berth options
+  - Auto-assignment algorithm
 
 </td>
 </tr>
 <tr>
 <td width="50%">
 
-### 🎯 Smart Allocation
-- 🤖 **Auto-Assignment**
-  - Intelligent seat allocation
+### 🎯 Smart Seat Allocation
+- 🤖 **Intelligent Assignment**
+  - Automated seat allocation
   - Berth-type based numbering
+  - Coach-wise distribution
 - 📊 **Real-time Tracking**
   - Live seat availability
   - Coach-wise monitoring
+  - Berth availability per coach
 - ✅ **Validation**
-  - Duplicate prevention
+  - Duplicate booking prevention
   - Same-person check
+  - Capacity constraints
 
 </td>
 <td width="50%">
 
 ### 📱 PNR Management
-- 🔢 **Unique PNR**
-  - 10-digit auto-generation
-  - Secure & traceable
+- 🔢 **Unique PNR Generation**
+  - 10-digit alphanumeric PNR
+  - Auto-generation on booking
+  - Collision detection
 - 🔎 **Status Check**
-  - Real-time lookup
-  - Complete journey info
+  - Real-time PNR lookup
+  - Complete journey information
+  - Passenger details display
 - ➕ **Add Passengers**
-  - Same PNR additions
-  - Group management
+  - Add to existing PNR
+  - Same journey extension
+  - Dynamic fare calculation
+
+</td>
+</tr>
+<tr>
+<td width="50%">
+
+### 🚄 Train Management
+- 🗺️ **Route Planning**
+  - Multi-station routes
+  - Sequential station ordering
+  - Distance tracking
+- ⏰ **Schedule Management**
+  - Daily train schedules
+  - Status tracking
+  - Delay monitoring
+- 🚂 **Train Types**
+  - Express, Superfast
+  - Rajdhani, Shatabdi
+  - Duronto, Passenger
+
+</td>
+<td width="50%">
+
+### 💰 Fare System
+- 📊 **Dynamic Pricing**
+  - Base fare calculation
+  - Distance-based pricing
+  - Class-based multipliers
+- 💳 **Class Tiers**
+  - General (1.0x)
+  - Sleeper (1.5x)
+  - AC 3-Tier (2.0x)
+  - AC 2-Tier (3.0x)
+  - AC 1-Tier (5.0x)
+  - First Class (6.0x)
+- 📝 **Transparent Billing**
+  - Itemized fare breakdown
+  - No hidden charges
 
 </td>
 </tr>
@@ -102,10 +153,11 @@ Welcome to the **Railway Ticket Reservation System** - a modern, full-featured w
 
 | Feature | Description | Status |
 |---------|-------------|--------|
-| 🚂 **Train Types** | Express, Shatabdi, Rajdhani, Duronto, Garib Rath | ✅ Active |
+| 🚂 **Train Types** | Express, Shatabdi, Rajdhani, Duronto, Superfast | ✅ Active |
 | 🗺️ **Stations** | 8 Major Indian Railway Stations | ✅ Active |
 | ⏰ **Schedules** | Multi-station routes with timing | ✅ Active |
 | 💰 **Dynamic Fares** | Base + Distance + Class charges | ✅ Active |
+| 🎫 **PNR System** | 10-digit unique identifiers | ✅ Active |
 
 </div>
 
@@ -117,29 +169,16 @@ Welcome to the **Railway Ticket Reservation System** - a modern, full-featured w
 
 ### 📋 Berth Distribution by Coach Type
 
+| Coach Type | Total Seats | Lower | Middle | Upper | Side Lower | Side Upper |
+|------------|-------------|-------|--------|-------|------------|------------|
+| **Sleeper** | 72 | 24 | 24 | 24 | 0 | 0 |
+| **AC 3-Tier** | 64 | 18 | 18 | 18 | 5 | 5 |
+| **AC 2-Tier** | 48 | 24 | 0 | 24 | 0 | 0 |
+| **AC 1-Tier** | 24 | 12 | 0 | 12 | 0 | 0 |
+| **General** | 100 | 0 | 0 | 0 | 0 | 0 |
+| **First Class** | 32 | 16 | 0 | 16 | 0 | 0 |
+
 </div>
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    SLEEPER / AC 3-TIER (72 Seats)           │
-├─────────────────────────────────────────────────────────────┤
-│  Lower: 18   │  Middle: 18  │  Upper: 18  │  Side: 18      │
-│  (1,4,7...)  │  (2,5,8...)  │  (3,6,9...) │  (64-72)       │
-└─────────────────────────────────────────────────────────────┘
-
-┌─────────────────────────────────────────────────────────────┐
-│                      AC 2-TIER (48 Seats)                   │
-├─────────────────────────────────────────────────────────────┤
-│  Lower: 16   │  Upper: 16   │  Side Lower: 8  │  Side Upper: 8  │
-│  (1,3,5...)  │  (2,4,6...)  │  (43,45,47)     │  (44,46,48)     │
-└─────────────────────────────────────────────────────────────┘
-
-┌─────────────────────────────────────────────────────────────┐
-│                   AC 1-TIER (24 Seats - Cabins)             │
-├─────────────────────────────────────────────────────────────┤
-│         Lower: 12 (1,3,5...)  │  Upper: 12 (2,4,6...)       │
-└─────────────────────────────────────────────────────────────┘
-```
 
 ---
 
@@ -151,27 +190,28 @@ Welcome to the **Railway Ticket Reservation System** - a modern, full-featured w
 
 <table>
 <tr>
-<td align="center" width="33%">
+<td align="center" width="25%">
 <img src="https://www.djangoproject.com/m/img/logos/django-logo-negative.png" width="100" alt="Django"/><br/>
 <b>Django 5.1.3</b><br/>
 <sub>Backend Framework</sub>
 </td>
-<td align="center" width="33%">
+<td align="center" width="25%">
 <img src="https://www.python.org/static/community_logos/python-logo.png" width="100" alt="Python"/><br/>
 <b>Python 3.8+</b><br/>
 <sub>Programming Language</sub>
 </td>
-<td align="center" width="33%">
+<td align="center" width="25%">
 <img src="https://upload.wikimedia.org/wikipedia/commons/d/d5/Tailwind_CSS_Logo.svg" width="100" alt="Tailwind"/><br/>
 <b>Tailwind CSS</b><br/>
 <sub>Styling Framework</sub>
 </td>
-</tr>
-<tr>
-<td align="center">
-<b>SQLite/PostgreSQL</b><br/>
+<td align="center" width="25%">
+<img src="https://upload.wikimedia.org/wikipedia/commons/3/38/SQLite370.svg" width="100" alt="SQLite"/><br/>
+<b>SQLite</b><br/>
 <sub>Database</sub>
 </td>
+</tr>
+<tr>
 <td align="center">
 <b>Django ORM</b><br/>
 <sub>Data Management</sub>
@@ -179,6 +219,14 @@ Welcome to the **Railway Ticket Reservation System** - a modern, full-featured w
 <td align="center">
 <b>Django Auth</b><br/>
 <sub>Security</sub>
+</td>
+<td align="center">
+<b>HTML5/CSS3</b><br/>
+<sub>Frontend</sub>
+</td>
+<td align="center">
+<b>JavaScript</b><br/>
+<sub>Interactivity</sub>
 </td>
 </tr>
 </table>
@@ -192,10 +240,10 @@ Welcome to the **Railway Ticket Reservation System** - a modern, full-featured w
 <div align="center">
 
 ```bash
-✓ Python 3.8 or higher
-✓ pip (Python package manager)
-✓ Virtual environment (recommended)
-✓ Git (for cloning)
+✅ Python 3.8 or higher
+✅ pip (Python package manager)
+✅ Virtual environment (recommended)
+✅ Git (for cloning)
 ```
 
 </div>
@@ -213,8 +261,8 @@ Welcome to the **Railway Ticket Reservation System** - a modern, full-featured w
 ### 1️⃣ Clone the Repository
 
 ```bash
-git clone <repository-url>
-cd TicketReservationSystemWeb/DemoProject
+git clone https://github.com/yourusername/railway-reservation-system.git
+cd railway-reservation-system/DemoProject
 ```
 
 ### 2️⃣ Set Up Virtual Environment
@@ -255,6 +303,7 @@ python manage.py seed_data
 - ✅ 40+ Coaches with berth distribution
 - ✅ Train routes with timings
 - ✅ Fare structures for all routes
+- ✅ Sample schedules for next 7 days
 
 </details>
 
@@ -330,7 +379,7 @@ graph LR
 **Search for Trains**
 - Select departure & arrival stations
 - Choose journey date
-- Pick your preferred train
+- View available trains
 
 </td>
 </tr>
@@ -345,6 +394,7 @@ graph LR
 **View Schedules**
 - Browse available schedules
 - Check seat availability
+- View fare information
 - Click "Book" on preferred schedule
 
 </td>
@@ -358,7 +408,8 @@ graph LR
 <td>
 
 **Enter Passenger Details**
-- Name, Age, Gender (up to 6 passengers)
+- Add passenger information (up to 6)
+  - Name, Age, Gender
 - Select seat class
 - Choose coach
 - Pick berth preference (optional)
@@ -373,9 +424,10 @@ graph LR
 </td>
 <td>
 
-**Confirm & Pay**
+**Confirm & Book**
 - Review booking details
-- Submit the form
+- Check total fare
+- Submit the booking
 - Receive unique PNR number
 
 </td>
@@ -410,28 +462,6 @@ graph LR
 
 </div>
 
-```
-┌─────────────┐       ┌──────────────┐       ┌─────────────┐
-│   Station   │──────▶│  TrainRoute  │◀──────│    Train    │
-└─────────────┘       └──────────────┘       └─────────────┘
-                              │                      │
-                              │                      │
-                              ▼                      ▼
-┌─────────────┐       ┌──────────────┐       ┌─────────────┐
-│    Fare     │       │TrainSchedule │       │    Coach    │
-└─────────────┘       └──────────────┘       └─────────────┘
-                              │                      │
-                              ▼                      │
-                      ┌──────────────┐               │
-                      │    Ticket    │               │
-                      └──────────────┘               │
-                              │                      │
-                              ▼                      │
-                      ┌──────────────┐               │
-                      │  Passenger   │◀──────────────┘
-                      └──────────────┘
-```
-
 ### Core Models
 
 | Model | Purpose | Key Fields |
@@ -444,6 +474,16 @@ graph LR
 | 💰 **Fare** | Pricing | Base, Distance, Class charges |
 | 🎫 **Ticket** | Bookings | PNR, Schedule, Source, Destination |
 | 👤 **Passenger** | Traveler info | Name, Age, Seat, Berth, Status |
+
+### Database Relationships
+
+```
+Station ──┐
+          ├──> TrainRoute ──> Train ──┐
+Station ──┘                           ├──> TrainSchedule ──> Ticket ──> Passenger
+                                      │
+                             Coach ───┘
+```
 
 ---
 
@@ -463,12 +503,20 @@ DemoProject/
 │   │   └── 📁 mainApp/
 │   │       ├── 🏠 home.html            # Landing page
 │   │       ├── 🔐 login.html           # Login page
-│   │       ├── 📝 signup.html          # Registration
+│   │       ├── 📝 signup_page.html     # Registration
 │   │       ├── 🔍 select_destinations.html
 │   │       ├── 📅 schedule_list.html
 │   │       ├── 🎫 book_ticket.html
 │   │       ├── 📄 ticket_detail.html
-│   │       └── 🔎 pnr_status.html
+│   │       ├── 🔎 pnr_status.html
+│   │       ├── ➕ add_passengers.html
+│   │       ├── ❌ cancel_ticket.html
+│   │       ├── ℹ️ features.html
+│   │       └── 📧 contact.html
+│   │
+│   ├── 📁 static/
+│   │   └── 📁 mainApp/
+│   │       └── 🖼️ train.png
 │   │
 │   ├── 📄 models.py                     # Data models
 │   ├── 📄 views.py                      # Business logic
@@ -482,7 +530,8 @@ DemoProject/
 │   └── 🚀 wsgi.py                       # WSGI config
 │
 ├── 💾 db.sqlite3                        # Database
-└── 🎯 manage.py                         # Django CLI
+├── 📄 manage.py                         # Django CLI
+└── 📖 README.md                         # Documentation
 ```
 
 ---
@@ -498,6 +547,7 @@ DemoProject/
 | 🔑 **Password Security** | Django bcrypt hashing | ✅ |
 | 🚫 **SQL Injection** | ORM parameterization | ✅ |
 | 👤 **Access Control** | Login decorators | ✅ |
+| ✅ **Form Validation** | Server-side validation | ✅ |
 
 </div>
 
@@ -520,6 +570,7 @@ DemoProject/
 - [ ] Email confirmation system
 - [ ] SMS notifications
 - [ ] QR code tickets
+- [ ] E-ticket PDF generation
 
 </td>
 <td width="50%">
@@ -529,6 +580,7 @@ DemoProject/
 - [ ] Ticket cancellation with refund
 - [ ] Waiting list (RAC) management
 - [ ] Train live tracking
+- [ ] Seat selection visualization
 
 </td>
 </tr>
@@ -540,15 +592,17 @@ DemoProject/
 - [ ] Interactive seat selection
 - [ ] Multi-language support
 - [ ] Dark mode theme
+- [ ] Responsive mobile design
 
 </td>
 <td>
 
 #### 📱 Technical Upgrades
-- [ ] PDF ticket generation
 - [ ] RESTful API
 - [ ] Mobile app (React Native)
 - [ ] Real-time chat support
+- [ ] Analytics dashboard
+- [ ] Performance optimization
 
 </td>
 </tr>
@@ -560,11 +614,12 @@ DemoProject/
 
 <div align="center">
 
-| Issue | Impact | Priority |
-|-------|--------|----------|
-| ⚠️ Berth preference not guaranteed when full | Low | Medium |
-| ⚠️ Session persistence | Low | Low |
-| ⚠️ Manual seat selection not available | Medium | High |
+| Issue | Impact | Priority | Status |
+|-------|--------|----------|--------|
+| ⚠️ Berth preference not guaranteed when coach is full | Low | Medium | 📝 Planned |
+| ⚠️ Session persistence across server restarts | Low | Low | 📝 Planned |
+| ⚠️ Manual seat selection not available | Medium | High | 🔄 In Progress |
+| ⚠️ Cancel ticket refund calculation | Low | Medium | 📝 Planned |
 
 </div>
 
@@ -594,11 +649,12 @@ git push origin feature/AmazingFeature
 
 ### Contribution Guidelines
 
-- 📝 Write clear commit messages
+- 📝 Write clear, descriptive commit messages
 - 🧪 Include tests for new features
-- 📚 Update documentation
-- 🎨 Follow PEP 8 style guide
-- ✅ Ensure all tests pass
+- 📚 Update documentation as needed
+- 🎨 Follow PEP 8 style guide for Python
+- ✅ Ensure all tests pass before submitting
+- 💬 Be respectful and constructive in discussions
 
 ---
 
@@ -608,7 +664,9 @@ git push origin feature/AmazingFeature
 
 This project is licensed under the **MIT License**
 
-*Free to use, modify, and distribute*
+*Free to use, modify, and distribute with attribution*
+
+See [LICENSE](LICENSE) file for details
 
 </div>
 
@@ -620,9 +678,10 @@ This project is licensed under the **MIT License**
 
 ### *Need Help?* 💬
 
-📧 **Email**: support@railwaytickets.com  
-🐛 **Issues**: [GitHub Issues](https://github.com/your-repo/issues)  
-💡 **Discussions**: [GitHub Discussions](https://github.com/your-repo/discussions)
+📧 **Email**: support@getsetride.com  
+🐛 **Issues**: [GitHub Issues](https://github.com/yourusername/railway-reservation-system/issues)  
+💡 **Discussions**: [GitHub Discussions](https://github.com/yourusername/railway-reservation-system/discussions)  
+📖 **Documentation**: [Wiki](https://github.com/yourusername/railway-reservation-system/wiki)
 
 </div>
 
@@ -635,10 +694,10 @@ This project is licensed under the **MIT License**
 Special thanks to:
 
 🎓 **Django Documentation** - Comprehensive framework guide  
-🚂 **Indian Railways** - Inspiration and standards  
-🎨 **Tailwind CSS** - Beautiful styling  
-👥 **Contributors** - Community support  
-🧪 **Testers** - Quality assurance  
+🚂 **Indian Railways** - Inspiration and operational standards  
+🎨 **Tailwind CSS** - Beautiful, responsive styling  
+👥 **Open Source Community** - Continuous support and inspiration  
+🧪 **Beta Testers** - Valuable feedback and bug reports
 
 </div>
 
@@ -650,17 +709,20 @@ Special thanks to:
 
 *If you find this project helpful, please consider giving it a star!*
 
-[![GitHub stars](https://img.shields.io/github/stars/your-username/railway-reservation?style=social)](https://github.com/your-username/railway-reservation)
-[![GitHub forks](https://img.shields.io/github/forks/your-username/railway-reservation?style=social)](https://github.com/your-username/railway-reservation)
+[![GitHub stars](https://img.shields.io/github/stars/yourusername/railway-reservation-system?style=social)](https://github.com/yourusername/railway-reservation-system)
+[![GitHub forks](https://img.shields.io/github/forks/yourusername/railway-reservation-system?style=social)](https://github.com/yourusername/railway-reservation-system)
+[![GitHub watchers](https://img.shields.io/github/watchers/yourusername/railway-reservation-system?style=social)](https://github.com/yourusername/railway-reservation-system)
 
 ---
 
-### 🚂 *Happy Journey with Railway Reservation System!* ✨
+### 🚂 *Happy Journey with GetSetRide!* ✨
 
-**Version**: 1.0.0 | **Last Updated**: November 2025
+**Version**: 1.0.0 | **Last Updated**: January 2025
 
-Made with ❤️ by the Development Team
+Made with ❤️ by the GetSetRide Team
 
 ---
+
+[⬆ Back to Top](#-railway-ticket-reservation-system)
 
 </div>
