@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ticket Details - PNR: {{ ticket.pnr }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .ticket-container {
+            border: 2px solid #333;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .ticket-header {
+            text-align: center;
+            border-bottom: 2px solid #333;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .ticket-info {
+            margin-bottom: 20px;
+        }
+        .ticket-info p {
+            margin: 5px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #333;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f0f0f0;
+        }
+        .actions {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 5px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        .status-confirmed {
+            color: green;
+            font-weight: bold;
+        }
+        .status-waiting {
+            color: orange;
+            font-weight: bold;
+        }
+        .status-cancelled {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="ticket-container">
+        <div class="ticket-header">
+            <h1>E-Ticket</h1>
+            <h2>PNR: {{ ticket.pnr }}</h2>
+        </div>
+
+        <div class="ticket-info">
+            <h3>Journey Details</h3>
+            <p><strong>Train:</strong> {{ ticket.schedule.train.name }} ({{ ticket.schedule.train.train_number }})</p>
+            <p><strong>Journey Date:</strong> {{ ticket.schedule.journey_date }}</p>
+            <p><strong>Class:</strong> {{ ticket.get_seat_class_display }}</p>
+            <p><strong>Booking Date:</strong> {{ ticket.booking_date|date:"d M Y, h:i A" }}</p>
+            <p><strong>Status:</strong> 
+                <span class="status-{{ ticket.booking_status|lower }}">
+                    {{ ticket.get_booking_status_display }}
+                </span>
+            </p>
+        </div>
+
+        <h3>Passenger Details</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Age</th>
+                    <th>Gender</th>
+                    <th>Seat Class</th>
+                    <th>Coach</th>
+                    <th>Seat Number</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for passenger in passengers %}
+                <tr>
+                    <td>{{ passenger.name }}</td>
+                    <td>{{ passenger.age }}</td>
+                    <td>{{ passenger.get_gender_display }}</td>
+                    <td>{{ passenger.get_seat_class_display }}</td>
+                    <td>{{ passenger.coach.coach_number|default:"N/A" }}</td>
+                    <td>{{ passenger.seat_number|default:"N/A" }}</td>
+                    <td>
+                        <span class="status-{{ passenger.current_status|lower }}">
+                            {{ passenger.get_current_status_display }}
+                        </span>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" style="text-align: center;">No passengers found</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="actions">
+            <a href="{% url 'main_page' %}" class="btn">Back to Home</a>
+            <a href="{% url 'add_passengers' ticket.pnr %}" class="btn">Add More Passengers</a>
+            <a href="{% url 'select_destinations' %}" class="btn" onclick="clearTicketSession()">Book New Ticket</a>
+            <button onclick="window.print()" class="btn">Print Ticket</button>
+        </div>
+    </div>
+
+    {% if messages %}
+    <div style="margin-top: 20px; text-align: center;">
+        {% for message in messages %}
+            <div style="padding: 10px; margin: 10px auto; max-width: 800px; background-color: {% if message.tags == 'success' %}#d4edda{% elif message.tags == 'error' %}#f8d7da{% else %}#d1ecf1{% endif %}; border: 1px solid {% if message.tags == 'success' %}#c3e6cb{% elif message.tags == 'error' %}#f5c6cb{% else %}#bee5eb{% endif %}; border-radius: 5px;">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <script>
+    function clearTicketSession() {
+        // Clear the current ticket from session when booking a new ticket
+        fetch('{% url "clear_ticket_session" %}', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}'
+            }
+        });
+    }
+    </script>
+</body>
+</html>

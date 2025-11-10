@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Available Schedules</title>
+</head>
+<body>
+    <h2>Available Schedules</h2>
+    <p>Train: {{ train.name }} ({{ train.train_number }})</p>
+    <p>Route: {{ from_station.name }} → {{ to_station.name }}</p>
+    <p>Departure Time: {{ departure_time|default:"N/A" }} | Arrival Time: {{ arrival_time|default:"N/A" }}</p>
+    
+    {% if schedules %}
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Journey Date</th>
+                    <th>Available Seats</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for schedule in schedules %}
+                <tr>
+                    <td>{{ schedule.journey_date }}</td>
+                    <td>{{ schedule.train.available_seats }}</td>
+                    <td>{{ schedule.status }}</td>
+                    <td>
+                        <a href="{% url 'select_schedule' schedule.id from_station.id to_station.id %}">Book</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No schedules available for the selected date.</p>
+    {% endif %}
+    
+    <br>
+    <a href="{% url 'select_destinations' %}">Back to Search</a>
+</body>
+</html>

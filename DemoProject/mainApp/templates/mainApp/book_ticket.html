@@ -1,0 +1,69 @@
+<h2>Buy Ticket</h2>
+{% if existing_ticket %}
+<div style="background-color: #d4edda; padding: 10px; margin-bottom: 20px; border: 1px solid #c3e6cb; border-radius: 5px;">
+    <strong>Adding passengers to existing PNR: {{ existing_ticket.pnr }}</strong>
+    <p>Current passengers: {{ existing_ticket.passengers.count }}</p>
+</div>
+{% endif %}
+<p>{{ schedule.train.name }} ({{ schedule.train.train_number }})</p>
+<p>{{ from_station.code }} → {{ to_station.code }}</p>
+<p>Date: {{ schedule.journey_date }} | Price: ₹{{ price }} per passenger</p>
+<form method="post" id="booking-form">
+  {% csrf_token %}
+  {{ formset.management_form }}
+  {% for passenger_form in formset %}
+    <div class="passenger-form">
+      {{ passenger_form.as_p }}
+    </div>
+  {% endfor %}
+  <button type="submit">Book Ticket</button>
+</form>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Store original coach options for each form
+    const coachSelects = document.querySelectorAll('select[name$="-coach"]');
+    const coachOptions = {};
+    
+    coachSelects.forEach((select, index) => {
+        coachOptions[index] = Array.from(select.options).map(opt => ({
+            value: opt.value,
+            text: opt.text,
+            coachType: opt.text.match(/\((.*?)\)/)?.[1] || ''
+        }));
+    });
+    
+    // Map seat class to coach type
+    const seatClassToCoachType = {
+        'SLEEPER': 'SLEEPER',
+        'AC_3_TIER': 'AC_3_TIER',
+        'AC_2_TIER': 'AC_2_TIER',
+        'AC_1_TIER': 'AC_1_TIER',
+        'FIRST_CLASS': 'FIRST_CLASS'
+    };
+    
+    // Filter coaches when seat class changes
+    document.querySelectorAll('select[name$="-seat_class"]').forEach((seatClassSelect, index) => {
+        seatClassSelect.addEventListener('change', function() {
+            const selectedSeatClass = this.value;
+            const coachSelect = coachSelects[index];
+            const expectedCoachType = seatClassToCoachType[selectedSeatClass];
+            
+            // Clear current options
+            coachSelect.innerHTML = '<option value="">---------</option>';
+            
+            // Filter and add matching coaches
+            if (expectedCoachType && coachOptions[index]) {
+                coachOptions[index].forEach(opt => {
+                    if (opt.value && opt.coachType === expectedCoachType) {
+                        const option = new Option(opt.text, opt.value);
+                        coachSelect.add(option);
+                    }
+                });
+            }
+        });
+    });
+});
+</script>
+
+<a href="{% url 'schedule_list' schedule.train.id from_station.id to_station.id %}?date={{ schedule.journey_date }}">Back</a>

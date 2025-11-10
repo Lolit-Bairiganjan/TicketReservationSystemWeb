@@ -1,0 +1,11 @@
+<h2>Book My Ticket</h2>
+<form method="post" id="search-form">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Search Schedules</button>
+</form>
+<script>
+  document.getElementById('id_train').addEventListener('change', function() {
+    document.getElementById('search-form').submit();
+  });
+</script>

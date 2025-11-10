@@ -1,0 +1,15 @@
+<h2>Ticket Confirmed</h2>
+<p>PNR: <strong>{{ ticket.pnr }}</strong></p>
+<p>Passenger: {{ ticket.passenger_name }}</p>
+<p>Train: {{ ticket.schedule.train.name }} ({{ ticket.schedule.train.train_number }})</p>
+<p>Route: {{ from_station.code }} → {{ to_station.code }}</p>
+<p>Date: {{ ticket.schedule.journey_date }}</p>
+<p>Seat Class: {{ ticket.get_seat_class_display }}</p>
+<p>Price Paid: ₹{{ price }}</p>
+<h3>Passengers</h3>
+<ul>
+  {% for passenger in ticket.passengers.all %}
+    <li>{{ passenger.name }} (Age: {{ passenger.age }}, Gender: {{ passenger.get_gender_display }}, Berth: {{ passenger.get_berth_preference_display }}, Seat: {{ passenger.seat_number }})</li>
+  {% endfor %}
+</ul>
+<a href="{% url 'select_destinations' %}">Book another</a>
