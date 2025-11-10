@@ -1,282 +1,248 @@
-# 🚂 GetSetRide - Railway Ticket Reservation System
+# Railway Ticket Reservation System
 
-<div align="center">
+A comprehensive Django-based web application for railway ticket booking and management, featuring real-time seat allocation, berth preference, and PNR tracking.
 
-![Django](https://img.shields.io/badge/Django-5.2.5-092E20?style=for-the-badge&logo=django&logoColor=white)
-![Python](https://img.shields.io/badge/Python-3.13-3776AB?style=for-the-badge&logo=python&logoColor=white)
-![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
-![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
-![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
-![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
+## 🚂 Features
 
-**A modern, beautiful, and responsive railway ticket booking platform built with Django**
+### User Management
+- **User Authentication**: Secure login/logout system with session management
+- **User Registration**: New user signup with validation
+- **Login Protection**: Restricted access to booking features for authenticated users only
 
-[🌟 Features](#-features) • [🚀 Quick Start](#-quick-start) • [📱 Screenshots](#-screenshots) • [🛠️ Tech Stack](#️-tech-stack) • [📄 License](#-license)
+### Ticket Booking System
+- **Train Search**: Search trains by route and journey date
+- **Schedule Browsing**: View available train schedules with seat availability
+- **Multi-Passenger Booking**: Book up to 6 passengers in a single transaction
+- **Berth Preference**: Choose preferred berth type (Lower/Middle/Upper/Side Lower/Side Upper)
+- **Smart Seat Allocation**: 
+  - Automatic seat assignment based on berth type
+  - Realistic Indian Railways seat numbering (e.g., Lower: 1,4,7... Middle: 2,5,8... Upper: 3,6,9...)
+  - Coach-wise seat tracking (Sleeper, AC 3-Tier, AC 2-Tier, AC 1-Tier)
+- **Add Passengers to Existing PNR**: Add more passengers to an already booked ticket under the same PNR
+- **Duplicate Prevention**: 
+  - Prevents same person from booking multiple tickets on the same train/date
+  - Validates duplicate names within a single booking
 
-</div>
+### PNR Management
+- **Unique PNR Generation**: Auto-generated 10-digit PNR for each ticket
+- **PNR Status Check**: Real-time ticket and passenger status lookup
+- **Comprehensive Ticket Details**: View journey info, passenger list, seat/berth assignments, and fare
 
----
+### Train & Route Management
+- **Multiple Train Types**: Support for Express, Shatabdi, Rajdhani, Duronto, and Garib Rath
+- **Station Management**: Pre-populated major Indian railway stations
+- **Route Planning**: Define multi-station routes with arrival/departure times
+- **Dynamic Fare Calculation**: Per-route fare with base, distance, and class charges
 
-## ✨ Features
+### Coach & Seat Management
+- **Coach Types**: Sleeper, AC 3-Tier, AC 2-Tier, AC 1-Tier, First Class
+- **Berth Distribution**:
+  - **Sleeper/AC 3-Tier**: 72 seats (18 Lower + 18 Middle + 18 Upper + 9 Side Lower + 9 Side Upper)
+  - **AC 2-Tier**: 48 seats (16 Lower + 16 Upper + 8 Side Lower + 8 Side Upper)
+  - **AC 1-Tier**: 24 seats (12 Lower + 12 Upper - cabin style)
+- **Real-time Availability Tracking**: Updates available berths after each booking
 
-### 🎨 **Beautiful Modern UI**
-- **Glass Morphism Design** - Stunning backdrop-blur effects and transparent elements
-- **Gradient Backgrounds** - Eye-catching indigo-to-purple gradient themes
-- **Floating Animations** - Smooth, engaging micro-interactions
-- **Responsive Design** - Perfect on desktop, tablet, and mobile devices
+### Advanced Features
+- **Session Management**: Maintains booking context across pages
+- **Transaction Safety**: Atomic database operations for booking integrity
+- **Journey Date Validation**: Prevents booking for past dates
+- **Responsive Design**: Mobile-friendly interface with Tailwind CSS
+- **Admin Panel**: Django admin for data management
 
-### 🎫 **Core Functionality**
-- **🏠 Home Page** - Stunning landing page with hero section and feature highlights
-- **🔍 Train Search** - Advanced search with multiple filters (stations, dates, class)
-- **📋 Train Listings** - Beautiful cards showing available trains with details
-- **🎫 Ticket Booking** - Streamlined booking process with passenger management
-- **💳 Payment Integration** - Secure payment processing interface
-- **👤 User Authentication** - Beautiful login and signup pages
+## 🛠️ Technology Stack
 
-### 📱 **User Experience**
-- **📞 Contact Support** - Professional contact page with multiple channels
-- **ℹ️ Feature Showcase** - Detailed features page highlighting platform benefits
-- **🔐 Secure Forms** - Form validation and security measures
-- **⚡ Fast Loading** - Optimized performance and smooth transitions
+- **Backend**: Django 5.1.3
+- **Database**: SQLite (development) / PostgreSQL (production ready)
+- **Frontend**: HTML5, Tailwind CSS, JavaScript
+- **Authentication**: Django built-in authentication system
+- **ORM**: Django ORM with complex querysets
 
----
+## 📋 Prerequisites
 
-## 🚀 Quick Start
+- Python 3.8+
+- pip (Python package manager)
+- Virtual environment (recommended)
 
-### Prerequisites
-- Python 3.8+ installed
-- MySQL or MariaDB installed and running
-- Git installed
-- Basic knowledge of Django
-
-### Installation
+## 🚀 Installation
 
 1. **Clone the repository**
-   ```bash
-   git clone https://github.com/Lolit-Bairiganjan/TicketReservationSystemWeb.git
-   cd TicketReservationSystemWeb
-   ```
+```bash
+git clone <repository-url>
+cd TicketReservationSystemWeb/DemoProject
+```
 
-2. **Navigate to the project directory**
-   ```bash
-   cd DemoProject
-   ```
+2. **Create and activate virtual environment**
+```bash
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+```
 
 3. **Install dependencies**
-   ```bash
-   pip install django mysqlclient
-   ```
-   
-   *Note: For MariaDB, you can also use:*
-   ```bash
-   pip install django PyMySQL
-   ```
+```bash
+pip install django
+```
 
-4. **Configure database settings**
-   Update `DemoProject/settings.py` with your MySQL/MariaDB credentials:
-   ```python
-   DATABASES = {
-       'default': {
-           'ENGINE': 'django.db.backends.mysql',
-           'NAME': 'your_database_name',
-           'USER': 'your_username',
-           'PASSWORD': 'your_password',
-           'HOST': 'localhost',
-           'PORT': '3306',
-       }
-   }
-   ```
+4. **Apply migrations**
+```bash
+python manage.py makemigrations
+python manage.py migrate
+```
 
-5. **Create database**
-   ```bash
-   # Login to MySQL/MariaDB and create database
-   mysql -u root -p
-   CREATE DATABASE your_database_name;
-   exit
-   ```
+5. **Seed the database**
+```bash
+python manage.py seed_data
+```
 
-6. **Run database migrations**
-   ```bash
-   python manage.py migrate
-   ```
+This will populate:
+- 8 major railway stations (Delhi, Mumbai, Agra, Jaipur, Kolkata, Chennai, Bangalore, Ahmedabad)
+- 5 trains with different types and routes
+- Coaches with proper berth distribution
+- Train routes with timings
+- Fare structures
 
-7. **Start the development server**
-   ```bash
-   python manage.py runserver
-   ```
+6. **Create superuser (for admin access)**
+```bash
+python manage.py createsuperuser
+```
 
-8. **Open your browser**
-   Navigate to `http://127.0.0.1:8000/` to see the beautiful application!
+7. **Run the development server**
+```bash
+python manage.py runserver
+```
 
----
+8. **Access the application**
+- Main site: http://127.0.0.1:8000/
+- Admin panel: http://127.0.0.1:8000/admin/
 
-## 📱 Screenshots
+## 📱 Usage
 
-<div align="center">
+### Booking a Ticket
 
-### 🏠 Home Page
-*Beautiful hero section with gradient backgrounds and floating animations*
+1. **Login** or **Register** a new account
+2. Click **"Book Your Ticket Now"** on the home page
+3. Select **train**, **from/to stations**, and **journey date**
+4. View available **schedules** and click **"Book"**
+5. Fill passenger details:
+   - Name, Age, Gender
+   - Seat Class
+   - Coach (filtered by class)
+   - Berth Preference (optional - auto-assigned if not selected)
+6. Submit the form
+7. Receive **PNR** and view ticket details
 
-### 🎫 Booking Interface
-*Intuitive train search and booking with modern card layouts*
+### Adding More Passengers
 
-### 📞 Contact Page
-*Professional contact form with multiple communication channels*
+1. From ticket details page, click **"Add More Passengers"**
+2. Fill new passenger details
+3. Submit - passengers will be added to the same PNR
 
-### 🔐 Authentication
-*Stunning login and signup pages with glass morphism effects*
+### Checking PNR Status
 
-</div>
+1. Click **"Check PNR Status"** (requires login)
+2. Enter **10-digit PNR**
+3. View complete ticket and passenger information
 
----
+## 📊 Database Models
 
-## 🛠️ Tech Stack
+### Core Models
+- **Station**: Railway stations with code, name, city, state
+- **Train**: Train details with number, name, type, total seats
+- **TrainRoute**: Station-wise route with arrival/departure times and sequence
+- **TrainSchedule**: Daily train schedules with journey date and status
+- **Coach**: Coach details with type, capacity, and berth tracking
+- **Fare**: Route-based pricing with base fare, distance charge, and class multiplier
+- **Ticket**: Booking record with PNR, schedule, source/destination, total fare
+- **Passenger**: Individual passenger details with seat/berth assignment
 
-### **Backend**
-- **Django 5.2.5** - High-level Python web framework
-- **Python 3.13** - Programming language
-- **MySQL/MariaDB** - Relational database management system
-- **mysqlclient/PyMySQL** - Python MySQL database connectors
+### Key Relationships
+- Train → Coaches (One-to-Many)
+- Train → Routes (Many-to-Many through TrainRoute)
+- Train → Schedules (One-to-Many)
+- Schedule → Tickets (One-to-Many)
+- Ticket → Passengers (One-to-Many)
 
-### **Frontend**
-- **HTML5** - Semantic markup
-- **Tailwind CSS** - Utility-first CSS framework
-- **JavaScript** - Interactive functionality
-- **Google Fonts (Inter)** - Beautiful typography
-
-### **Design Features**
-- **Glass Morphism** - Modern backdrop-blur effects
-- **Gradient Design System** - Consistent color schemes
-- **Responsive Layout** - Mobile-first approach
-- **CSS Animations** - Smooth transitions and hover effects
-
----
-
-## 📁 Project Structure
+## 🔧 Project Structure
 
 ```
 DemoProject/
-├── DemoProject/
-│   ├── __init__.py
-│   ├── settings.py          # Django settings
-│   ├── urls.py             # Main URL configuration
-│   ├── wsgi.py             # WSGI configuration
-│   └── asgi.py             # ASGI configuration
 ├── mainApp/
-│   ├── migrations/         # Database migrations
-│   ├── templates/          # HTML templates
-│   │   ├── home.html           # 🏠 Landing page
-│   │   ├── features.html       # ✨ Features showcase
-│   │   ├── contact.html        # 📞 Contact page
-│   │   ├── login.html          # 🔐 User login
-│   │   ├── login_signup.html   # 🎉 User registration
-│   │   ├── Book_Your_Ticket_Now.html  # 🎫 Booking interface
-│   │   ├── available_trains.html      # 🚂 Train listings
-│   │   └── payment.html        # 💳 Payment processing
-│   ├── views.py            # View functions
-│   ├── urls.py             # App URL patterns
-│   ├── models.py           # Database models
-│   └── admin.py            # Admin configuration
-├── static/                 # Static files (CSS, JS, images)
-├── media/                  # User uploaded files
-├── manage.py              # Django management script
-└── requirements.txt       # Python dependencies (if present)
+│   ├── management/
+│   │   └── commands/
+│   │       └── seed_data.py          # Database seeding script
+│   ├── migrations/
+│   ├── templates/
+│   │   └── mainApp/
+│   │       ├── home.html             # Landing page
+│   │       ├── login.html            # Login page
+│   │       ├── signup.html           # Registration page
+│   │       ├── select_destinations.html  # Train search
+│   │       ├── schedule_list.html    # Available schedules
+│   │       ├── book_ticket.html      # Booking form
+│   │       ├── ticket_detail.html    # Ticket view
+│   │       └── pnr_status.html       # PNR checker
+│   ├── models.py                     # Database models
+│   ├── views.py                      # View functions
+│   ├── forms.py                      # Form definitions
+│   ├── urls.py                       # URL routing
+│   └── admin.py                      # Admin configuration
+├── DemoProject/
+│   ├── settings.py
+│   ├── urls.py
+│   └── wsgi.py
+├── db.sqlite3
+└── manage.py
 ```
 
----
+## 🔐 Security Features
 
-## 🌟 Key Features Breakdown
+- CSRF protection on all forms
+- Session-based authentication
+- Login required decorators on booking views
+- SQL injection prevention via Django ORM
+- Password hashing with Django's built-in system
 
-### 🎨 **Design Excellence**
-- **Modern Glass Morphism** - Trendy transparent design elements
-- **Gradient Color Schemes** - Professional indigo-to-purple gradients
-- **Smooth Animations** - Floating elements and hover effects
-- **Typography** - Clean Inter font family for readability
+## 🎯 Future Enhancements
 
-### 🚂 **Railway Booking Features**
-- **Multi-class Support** - First AC, Second AC, Third AC, Sleeper, Chair Car
-- **Date Selection** - Advanced date picker for journey planning
-- **Passenger Management** - Support for up to 6 passengers per booking
-- **Real-time Availability** - Dynamic train availability display
+- [ ] Payment gateway integration
+- [ ] Email/SMS notifications
+- [ ] Ticket cancellation with refund
+- [ ] Waiting list management
+- [ ] User booking history
+- [ ] Train live tracking
+- [ ] Seat availability calendar view
+- [ ] Multi-language support
+- [ ] PDF ticket generation
+- [ ] RAC (Reservation Against Cancellation) support
 
-### 📱 **Responsive Design**
-- **Mobile Optimized** - Perfect experience on all screen sizes
-- **Touch Friendly** - Large buttons and touch targets
-- **Fast Loading** - Optimized images and CSS
-- **Progressive Enhancement** - Works without JavaScript as fallback
+## 🐛 Known Issues
 
----
+- Berth preference may not always be honored if preferred berths are full
+- Session data persists until manually cleared - implement auto-cleanup
 
-## 🚀 Getting Started with Development
+## 👥 Contributing
 
-### **Adding New Features**
-1. Create new views in `mainApp/views.py`
-2. Add URL patterns in `mainApp/urls.py`
-3. Create beautiful templates following the existing design system
-4. Use Tailwind CSS classes for consistent styling
-
-### **Customizing Design**
-- Modify gradient colors in the CSS custom properties
-- Adjust glass morphism effects in the backdrop-blur classes
-- Customize animations by modifying the floating-animation keyframes
-
-### **Database Customization**
-- Update models in `mainApp/models.py`
-- Configure MySQL/MariaDB settings in `DemoProject/settings.py`
-- Run `python manage.py makemigrations` and `python manage.py migrate`
-- Add admin interface configurations in `mainApp/admin.py`
-- For production, consider using connection pooling and optimized settings
-
----
-
-## 🤝 Contributing
-
-We welcome contributions to make GetSetRide even better! Here's how you can help:
-
-1. **Fork the repository**
-2. **Create a feature branch** (`git checkout -b feature/amazing-feature`)
-3. **Commit your changes** (`git commit -m 'Add amazing feature'`)
-4. **Push to the branch** (`git push origin feature/amazing-feature`)
-5. **Open a Pull Request**
-
-### **Areas for Contribution**
-- 🎨 UI/UX improvements
-- 🔧 New features and functionality
-- 🐛 Bug fixes and optimizations
-- 📚 Documentation enhancements
-- 🧪 Test coverage improvements
-
----
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit changes (`git commit -m 'Add AmazingFeature'`)
+4. Push to branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
 ## 📄 License
 
-This project is open source and available under the [MIT License](LICENSE).
+This project is open source and available under the MIT License.
 
----
+## 📧 Contact
 
-## 👨‍💻 Developer
-
-**Lolit Bairiganjan**
-- GitHub: [@Lolit-Bairiganjan](https://github.com/Lolit-Bairiganjan)
-- Project: [TicketReservationSystemWeb](https://github.com/Lolit-Bairiganjan/TicketReservationSystemWeb)
-
----
+For questions or support, please contact the development team.
 
 ## 🙏 Acknowledgments
 
-- **Django Community** - For the amazing web framework
-- **Tailwind CSS** - For the utility-first CSS framework
-- **Google Fonts** - For the beautiful Inter typography
-- **Open Source Community** - For inspiration and best practices
+- Django documentation
+- Indian Railways for inspiration
+- Tailwind CSS for styling
+- Contributors and testers
 
 ---
 
-<div align="center">
-
-**⭐ If you found this project helpful, please give it a star! ⭐**
-
-**🚂 Happy Booking with GetSetRide! 🎫**
-
-*Made with ❤️ and Django*
-
-</div>
+**Version**: 1.0.0  
+**Last Updated**: November 2025
