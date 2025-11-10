@@ -1,159 +1,240 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ticket Details - PNR: {{ ticket.pnr }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        .ticket-container {
-            border: 2px solid #333;
-            padding: 20px;
-            max-width: 800px;
-            margin: 0 auto;
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
         }
-        .ticket-header {
-            text-align: center;
-            border-bottom: 2px solid #333;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-        }
-        .ticket-info {
-            margin-bottom: 20px;
-        }
-        .ticket-info p {
-            margin: 5px 0;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        table, th, td {
-            border: 1px solid #333;
-        }
-        th, td {
-            padding: 10px;
-            text-align: left;
-        }
-        th {
-            background-color: #f0f0f0;
-        }
-        .actions {
-            margin-top: 20px;
-            text-align: center;
-        }
-        .btn {
-            display: inline-block;
-            padding: 10px 20px;
-            margin: 5px;
-            background-color: #007bff;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-        }
-        .btn:hover {
-            background-color: #0056b3;
-        }
-        .status-confirmed {
-            color: green;
-            font-weight: bold;
-        }
-        .status-waiting {
-            color: orange;
-            font-weight: bold;
-        }
-        .status-cancelled {
-            color: red;
-            font-weight: bold;
+        @media print {
+            .no-print { display: none !important; }
+            body { background: white !important; }
         }
     </style>
 </head>
-<body>
-    <div class="ticket-container">
-        <div class="ticket-header">
-            <h1>E-Ticket</h1>
-            <h2>PNR: {{ ticket.pnr }}</h2>
-        </div>
-
-        <div class="ticket-info">
-            <h3>Journey Details</h3>
-            <p><strong>Train:</strong> {{ ticket.schedule.train.name }} ({{ ticket.schedule.train.train_number }})</p>
-            <p><strong>Journey Date:</strong> {{ ticket.schedule.journey_date }}</p>
-            <p><strong>Class:</strong> {{ ticket.get_seat_class_display }}</p>
-            <p><strong>Booking Date:</strong> {{ ticket.booking_date|date:"d M Y, h:i A" }}</p>
-            <p><strong>Status:</strong> 
-                <span class="status-{{ ticket.booking_status|lower }}">
-                    {{ ticket.get_booking_status_display }}
-                </span>
-            </p>
-        </div>
-
-        <h3>Passenger Details</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Age</th>
-                    <th>Gender</th>
-                    <th>Seat Class</th>
-                    <th>Coach</th>
-                    <th>Seat Number</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for passenger in passengers %}
-                <tr>
-                    <td>{{ passenger.name }}</td>
-                    <td>{{ passenger.age }}</td>
-                    <td>{{ passenger.get_gender_display }}</td>
-                    <td>{{ passenger.get_seat_class_display }}</td>
-                    <td>{{ passenger.coach.coach_number|default:"N/A" }}</td>
-                    <td>{{ passenger.seat_number|default:"N/A" }}</td>
-                    <td>
-                        <span class="status-{{ passenger.current_status|lower }}">
-                            {{ passenger.get_current_status_display }}
+<body class="antialiased">
+    <div class="min-h-screen py-12 px-4">
+        <div class="max-w-6xl mx-auto">
+            <!-- Main Ticket Card -->
+            <div class="glass-effect rounded-3xl shadow-2xl p-8 mb-8">
+                
+                <!-- PNR Header -->
+                <div class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-2xl p-8 mb-8">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                        <div>
+                            <h1 class="text-4xl font-bold mb-2">🎫 Railway E-Ticket</h1>
+                            <p class="text-2xl font-mono tracking-wider">PNR: {{ ticket.pnr }}</p>
+                        </div>
+                        <span class="px-6 py-3 rounded-full text-lg font-bold
+                            {% if ticket.booking_status == 'CONFIRMED' %}bg-green-500
+                            {% elif ticket.booking_status == 'CANCELLED' %}bg-red-500
+                            {% else %}bg-yellow-500{% endif %}">
+                            {{ ticket.booking_status }}
                         </span>
-                    </td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="7" style="text-align: center;">No passengers found</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                    </div>
+                </div>
 
-        <div class="actions">
-            <a href="{% url 'main_page' %}" class="btn">Back to Home</a>
-            <a href="{% url 'add_passengers' ticket.pnr %}" class="btn">Add More Passengers</a>
-            <a href="{% url 'select_destinations' %}" class="btn" onclick="clearTicketSession()">Book New Ticket</a>
-            <button onclick="window.print()" class="btn">Print Ticket</button>
+                <!-- Journey Information -->
+                <div class="mb-10">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-6 flex items-center">
+                        <span class="text-4xl mr-3">🚂</span> Journey Information
+                    </h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div class="bg-gradient-to-br from-blue-50 to-indigo-100 p-5 rounded-xl border-l-4 border-indigo-600">
+                            <p class="text-sm text-gray-600 font-semibold mb-1">Train</p>
+                            <p class="text-xl font-bold text-gray-900">{{ ticket.schedule.train.name }}</p>
+                            <p class="text-sm text-gray-700">#{{ ticket.schedule.train.train_number }}</p>
+                        </div>
+                        <div class="bg-gradient-to-br from-blue-50 to-indigo-100 p-5 rounded-xl border-l-4 border-blue-600">
+                            <p class="text-sm text-gray-600 font-semibold mb-1">Train Type</p>
+                            <p class="text-xl font-bold text-gray-900">{{ ticket.schedule.train.get_train_type_display }}</p>
+                        </div>
+                        <div class="bg-gradient-to-br from-purple-50 to-pink-100 p-5 rounded-xl border-l-4 border-purple-600">
+                            <p class="text-sm text-gray-600 font-semibold mb-1">Journey Date</p>
+                            <p class="text-xl font-bold text-gray-900">{{ ticket.schedule.journey_date|date:"d M Y" }}</p>
+                            <p class="text-sm text-gray-700">{{ ticket.schedule.journey_date|date:"l" }}</p>
+                        </div>
+                        <div class="bg-gradient-to-br from-green-50 to-emerald-100 p-5 rounded-xl border-l-4 border-green-600">
+                            <p class="text-sm text-gray-600 font-semibold mb-1">From</p>
+                            <p class="text-xl font-bold text-gray-900">{{ ticket.source_station.name }}</p>
+                            <p class="text-sm text-gray-700">{{ ticket.source_station.code }}</p>
+                        </div>
+                        <div class="bg-gradient-to-br from-green-50 to-emerald-100 p-5 rounded-xl border-l-4 border-green-600">
+                            <p class="text-sm text-gray-600 font-semibold mb-1">To</p>
+                            <p class="text-xl font-bold text-gray-900">{{ ticket.destination_station.name }}</p>
+                            <p class="text-sm text-gray-700">{{ ticket.destination_station.code }}</p>
+                        </div>
+                        <div class="bg-gradient-to-br from-yellow-50 to-orange-100 p-5 rounded-xl border-l-4 border-yellow-600">
+                            <p class="text-sm text-gray-600 font-semibold mb-1">Class(es)</p>
+                            <p class="text-xl font-bold text-gray-900">{{ ticket.get_seat_classes }}</p>
+                        </div>
+                        <div class="bg-gradient-to-br from-pink-50 to-rose-100 p-5 rounded-xl border-l-4 border-pink-600">
+                            <p class="text-sm text-gray-600 font-semibold mb-1">Booking Date</p>
+                            <p class="text-lg font-bold text-gray-900">{{ ticket.booking_date|date:"d M Y" }}</p>
+                            <p class="text-sm text-gray-700">{{ ticket.booking_date|date:"h:i A" }}</p>
+                        </div>
+                        <div class="bg-gradient-to-br from-emerald-50 to-teal-100 p-5 rounded-xl border-l-4 border-emerald-600 md:col-span-2">
+                            <p class="text-sm text-gray-600 font-semibold mb-1">Total Fare</p>
+                            <p class="text-3xl font-bold text-emerald-700">₹{{ ticket.get_total_fare }}</p>
+                            <p class="text-xs text-gray-600 mt-1">{{ ticket.passengers.count }} passenger(s)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Passenger Details -->
+                <div class="mb-10">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-6 flex items-center">
+                        <span class="text-4xl mr-3">👥</span> Passenger Details
+                    </h2>
+                    <div class="overflow-x-auto rounded-2xl shadow-xl">
+                        <table class="w-full">
+                            <thead class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
+                                <tr>
+                                    <th class="px-6 py-4 text-left text-sm font-bold">S.No</th>
+                                    <th class="px-6 py-4 text-left text-sm font-bold">Name</th>
+                                    <th class="px-6 py-4 text-left text-sm font-bold">Age</th>
+                                    <th class="px-6 py-4 text-left text-sm font-bold">Gender</th>
+                                    <th class="px-6 py-4 text-left text-sm font-bold">Class</th>
+                                    <th class="px-6 py-4 text-left text-sm font-bold">Coach</th>
+                                    <th class="px-6 py-4 text-left text-sm font-bold">Seat</th>
+                                    <th class="px-6 py-4 text-left text-sm font-bold">Berth</th>
+                                    <th class="px-6 py-4 text-left text-sm font-bold">Fare</th>
+                                    <th class="px-6 py-4 text-left text-sm font-bold">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white">
+                                {% for passenger in ticket.passengers.all %}
+                                <tr class="border-b hover:bg-gray-50 transition duration-200">
+                                    <td class="px-6 py-4 font-semibold">{{ forloop.counter }}</td>
+                                    <td class="px-6 py-4 font-bold text-gray-900">{{ passenger.name }}</td>
+                                    <td class="px-6 py-4">{{ passenger.age }}</td>
+                                    <td class="px-6 py-4">{{ passenger.get_gender_display }}</td>
+                                    <td class="px-6 py-4 font-semibold text-orange-600">{{ passenger.seat_class }}</td>
+                                    <td class="px-6 py-4 font-semibold text-indigo-600">{{ passenger.coach.coach_number|default:"TBA" }}</td>
+                                    <td class="px-6 py-4 font-semibold text-purple-600 text-lg">{{ passenger.seat_number|default:"TBA" }}</td>
+                                    <td class="px-6 py-4 text-gray-700">{{ passenger.get_berth_type_display|default:"-" }}</td>
+                                    <td class="px-6 py-4 font-bold text-green-600">₹{{ passenger.fare }}</td>
+                                    <td class="px-6 py-4">
+                                        <span class="px-3 py-1 rounded-full text-xs font-bold
+                                            {% if passenger.current_status == 'CONFIRMED' %}bg-green-100 text-green-800 border border-green-300
+                                            {% elif passenger.current_status == 'CANCELLED' %}bg-red-100 text-red-800 border border-red-300
+                                            {% else %}bg-yellow-100 text-yellow-800 border border-yellow-300{% endif %}">
+                                            {{ passenger.current_status }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="10" class="px-6 py-8 text-center text-gray-500">No passengers found</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-wrap gap-4 justify-center no-print">
+                    <a href="{% url 'main_page' %}" 
+                       class="px-8 py-4 bg-gradient-to-r from-gray-600 to-gray-700 text-white text-lg font-bold rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-300">
+                        🏠 Back to Home
+                    </a>
+                    
+                    {% if ticket.booking_status == 'CONFIRMED' %}
+                    <a href="{% url 'add_passengers' ticket.pnr %}" 
+                       class="px-8 py-4 bg-gradient-to-r from-blue-600 to-cyan-600 text-white text-lg font-bold rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-300">
+                        ➕ Add Passenger
+                    </a>
+                    
+                    <a href="{% url 'cancel_ticket' ticket.pnr %}" 
+                       onclick="return confirm('Are you sure you want to cancel this ticket?')"
+                       class="px-8 py-4 bg-gradient-to-r from-red-600 to-pink-600 text-white text-lg font-bold rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-300">
+                        ❌ Cancel Ticket
+                    </a>
+                    {% endif %}
+                    
+                    <a href="{% url 'select_destinations' %}" 
+                       class="px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-lg font-bold rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-300">
+                        🎫 Book Another
+                    </a>
+                    
+                    <button onclick="window.print()" 
+                            class="px-8 py-4 bg-gradient-to-r from-green-600 to-emerald-600 text-white text-lg font-bold rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-300">
+                        🖨️ Print Ticket
+                    </button>
+                </div>
+            </div>
+
+            <!-- Important Information Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 no-print">
+                <div class="glass-effect rounded-2xl p-6 text-center shadow-lg transform hover:scale-105 transition duration-300">
+                    <div class="text-6xl mb-4">⏰</div>
+                    <h3 class="font-bold text-gray-800 mb-2 text-xl">Arrive Early</h3>
+                    <p class="text-gray-600">Reach station 30 minutes before departure</p>
+                </div>
+                <div class="glass-effect rounded-2xl p-6 text-center shadow-lg transform hover:scale-105 transition duration-300">
+                    <div class="text-6xl mb-4">🆔</div>
+                    <h3 class="font-bold text-gray-800 mb-2 text-xl">Valid ID Required</h3>
+                    <p class="text-gray-600">Carry government-issued ID proof</p>
+                </div>
+                <div class="glass-effect rounded-2xl p-6 text-center shadow-lg transform hover:scale-105 transition duration-300">
+                    <div class="text-6xl mb-4">📱</div>
+                    <h3 class="font-bold text-gray-800 mb-2 text-xl">Keep PNR Handy</h3>
+                    <p class="text-gray-600">Save or screenshot this page</p>
+                </div>
+            </div>
+
+            <!-- Terms and Conditions -->
+            <div class="glass-effect rounded-2xl p-8 mb-8 no-print">
+                <h3 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                    <span class="text-3xl mr-3">📋</span> Important Notes
+                </h3>
+                <ul class="space-y-4">
+                    <li class="flex items-start">
+                        <span class="text-indigo-600 mr-3 text-2xl">•</span>
+                        <span class="text-gray-700 text-lg">Please carry a valid government-issued photo ID proof during the journey.</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-indigo-600 mr-3 text-2xl">•</span>
+                        <span class="text-gray-700 text-lg">Cancellation charges may apply. Check cancellation policy before canceling.</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-indigo-600 mr-3 text-2xl">•</span>
+                        <span class="text-gray-700 text-lg">Chart preparation is done 4 hours before scheduled departure.</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-indigo-600 mr-3 text-2xl">•</span>
+                        <span class="text-gray-700 text-lg">This is a computer-generated ticket and does not require a signature.</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Support Section -->
+            <div class="glass-effect rounded-2xl p-8 text-center no-print">
+                <h3 class="text-3xl font-bold text-gray-800 mb-4">Need Help?</h3>
+                <p class="text-gray-600 mb-6 text-lg">Our support team is here to assist you 24/7</p>
+                <div class="flex flex-wrap gap-4 justify-center">
+                    <a href="tel:139" 
+                       class="px-8 py-4 bg-gradient-to-r from-green-600 to-emerald-600 text-white text-lg font-bold rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-300">
+                        📞 Call: 139
+                    </a>
+                    <a href="mailto:support@railway.com" 
+                       class="px-8 py-4 bg-gradient-to-r from-blue-600 to-cyan-600 text-white text-lg font-bold rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-300">
+                        ✉️ Email Support
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
-
-    {% if messages %}
-    <div style="margin-top: 20px; text-align: center;">
-        {% for message in messages %}
-            <div style="padding: 10px; margin: 10px auto; max-width: 800px; background-color: {% if message.tags == 'success' %}#d4edda{% elif message.tags == 'error' %}#f8d7da{% else %}#d1ecf1{% endif %}; border: 1px solid {% if message.tags == 'success' %}#c3e6cb{% elif message.tags == 'error' %}#f5c6cb{% else %}#bee5eb{% endif %}; border-radius: 5px;">
-                {{ message }}
-            </div>
-        {% endfor %}
-    </div>
-    {% endif %}
-
-    <script>
-    function clearTicketSession() {
-        // Clear the current ticket from session when booking a new ticket
-        fetch('{% url "clear_ticket_session" %}', {
-            method: 'POST',
-            headers: {
-                'X-CSRFToken': '{{ csrf_token }}'
-            }
-        });
-    }
-    </script>
 </body>
 </html>
+

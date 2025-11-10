@@ -4,6 +4,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils import timezone
 import secrets
 import string
+from decimal import Decimal
 
 # Create your models here.
 
@@ -90,6 +91,7 @@ class TrainSchedule(models.Model):
         ('COMPLETED', 'Completed'),
     ], default='SCHEDULED')
     delay_minutes = models.IntegerField(default=0, validators=[MinValueValidator(0)])
+    base_fare = models.DecimalField(max_digits=8, decimal_places=2, default=0)  # ADD THIS
     
     class Meta:
         unique_together = ['train', 'journey_date']
@@ -97,293 +99,277 @@ class TrainSchedule(models.Model):
     
     def __str__(self):
         return f"{self.train.train_number} - {self.journey_date} ({self.status})"
-
+    
+    def get_total_seats(self):
+        """Get total seats from the train's coaches"""
+        return self.train.coaches.aggregate(
+            total=models.Sum('total_seats')
+        )['total'] or 0
+    
+    def get_available_seats(self):
+        """Get available seats by calculating booked seats for this specific schedule"""
+        # Get all passengers for this schedule across all tickets
+        booked_count = Passenger.objects.filter(
+            ticket__schedule=self,
+            current_status__in=['CONFIRMED', 'RAC', 'WAITING']
+        ).count()
+        
+        return self.get_total_seats() - booked_count
+    
+    def get_booked_seats(self):
+        """Get total booked seats for this schedule"""
+        return Passenger.objects.filter(
+            ticket__schedule=self,
+            current_status__in=['CONFIRMED', 'RAC', 'WAITING']
+        ).count()
 
 class Ticket(models.Model):
-    """Model for ticket bookings"""
-    BOOKING_STATUS_CHOICES = [
-        ('PENDING', 'Pending'),
+    """Model for train tickets"""
+    STATUS_CHOICES = [
         ('CONFIRMED', 'Confirmed'),
+        ('PENDING', 'Pending'),
         ('CANCELLED', 'Cancelled'),
+        ('WAITING', 'Waiting List'),
     ]
     
-    schedule = models.ForeignKey('TrainSchedule', on_delete=models.PROTECT, related_name='tickets')
-    passenger_name = models.CharField(max_length=100, default='Passenger')
-    email = models.EmailField(blank=True)
-    seat_class = models.CharField(max_length=20, choices=[
-        ('GENERAL', 'General'),
-        ('SLEEPER', 'Sleeper'),
-        ('AC_3_TIER', 'AC 3 Tier'),
-        ('AC_2_TIER', 'AC 2 Tier'),
-        ('AC_1_TIER', 'AC 1 Tier'),
-        ('FIRST_CLASS', 'First Class'),
-    ], default='GENERAL')
-    source_station = models.ForeignKey('Station', on_delete=models.PROTECT, related_name='tickets_from', null=True)
-    destination_station = models.ForeignKey('Station', on_delete=models.PROTECT, related_name='tickets_to', null=True)
-    pnr = models.CharField(max_length=14, unique=True, editable=False)
-    booked_at = models.DateTimeField(default=timezone.now)
-    booking_status = models.CharField(max_length=20, choices=BOOKING_STATUS_CHOICES, default='CONFIRMED')
+    pnr = models.CharField(max_length=10, unique=True, editable=False)
+    schedule = models.ForeignKey(TrainSchedule, on_delete=models.CASCADE)
+    passenger_name = models.CharField(max_length=100)
+    email = models.EmailField(blank=True, null=True)
+    seat_class = models.CharField(max_length=20)
+    source_station = models.ForeignKey(Station, on_delete=models.CASCADE, related_name='source_tickets', null=True, blank=True)
+    destination_station = models.ForeignKey(Station, on_delete=models.CASCADE, related_name='destination_tickets', null=True, blank=True)
+    booking_status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='CONFIRMED')
+    booking_date = models.DateTimeField(auto_now_add=True)  # ADD auto_now_add=True
     total_fare = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-
+    
     def save(self, *args, **kwargs):
+        """Generate PNR if not exists"""
         if not self.pnr:
-            self.pnr = _generate_unique_pnr()
+            import random
+            import string
+            # Generate a 10-character alphanumeric PNR
+            self.pnr = ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
+            # Ensure uniqueness
+            while Ticket.objects.filter(pnr=self.pnr).exists():
+                self.pnr = ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
         super().save(*args, **kwargs)
-
+    
     def __str__(self):
-        return f"{self.pnr} - {self.passenger_name}"
-
-def _generate_unique_pnr():
-    alphabet = string.ascii_uppercase + string.digits
-    for _ in range(10):
-        pnr = ''.join(secrets.choice(alphabet) for _ in range(10))
-        if not Ticket.objects.filter(pnr=pnr).exists():
-            return pnr
-    # Fallback with longer PNR if collisions (very unlikely)
-    return ''.join(secrets.choice(alphabet) for _ in range(14))
-
+        return f"PNR: {self.pnr} - {self.passenger_name}"
+    
+    def get_total_fare(self):
+        """Calculate total fare from all passengers"""
+        return sum(passenger.get_fare() for passenger in self.passengers.all())
+    
+    def get_seat_classes(self):
+        """Get all unique seat classes for this ticket"""
+        classes = list(self.passengers.values_list('seat_class', flat=True).distinct())
+        if classes:
+            # Convert codes to display names
+            display_names = {
+                'GENERAL': 'General',
+                'SLEEPER': 'Sleeper',
+                'AC_3_TIER': 'AC 3-Tier',
+                'AC_2_TIER': 'AC 2-Tier',
+                'AC_1_TIER': 'AC 1-Tier',
+                'FIRST_CLASS': 'First Class',
+            }
+            return ', '.join([display_names.get(c, c) for c in classes])
+        return self.seat_class
+    
+    class Meta:
+        ordering = ['-booking_date']
 
 class Coach(models.Model):
-    COACH_TYPE_CHOICES = [
+    train = models.ForeignKey(Train, on_delete=models.CASCADE, related_name='coaches')
+    coach_number = models.CharField(max_length=10)
+    coach_type = models.CharField(max_length=20, choices=[
         ('SLEEPER', 'Sleeper'),
         ('AC_3_TIER', 'AC 3 Tier'),
         ('AC_2_TIER', 'AC 2 Tier'),
         ('AC_1_TIER', 'AC 1 Tier'),
+        ('GENERAL', 'General'),
         ('FIRST_CLASS', 'First Class'),
-    ]
-    
-    train = models.ForeignKey('Train', on_delete=models.CASCADE, related_name='coaches')
-    coach_number = models.CharField(max_length=10)
-    coach_type = models.CharField(max_length=20, choices=COACH_TYPE_CHOICES)
+    ])
     total_seats = models.IntegerField()
-    available_seats = models.IntegerField()
     
-    # Berth tracking
+    # Berth distribution
     total_lower = models.IntegerField(default=0)
-    available_lower = models.IntegerField(default=0)
     total_middle = models.IntegerField(default=0)
-    available_middle = models.IntegerField(default=0)
     total_upper = models.IntegerField(default=0)
-    available_upper = models.IntegerField(default=0)
     total_side_lower = models.IntegerField(default=0)
-    available_side_lower = models.IntegerField(default=0)
     total_side_upper = models.IntegerField(default=0)
-    available_side_upper = models.IntegerField(default=0)
-
+    
     class Meta:
-        ordering = ['train', 'coach_number']
         unique_together = ['train', 'coach_number']
-
+    
     def __str__(self):
         return f"{self.train.train_number} - {self.coach_number} ({self.coach_type})"
     
-    def get_available_berth_type(self, preference=None):
-        """Get available berth type based on preference or availability"""
-        berth_availability = {
-            'LOWER': self.available_lower,
-            'MIDDLE': self.available_middle,
-            'UPPER': self.available_upper,
-            'SIDE_LOWER': self.available_side_lower,
-            'SIDE_UPPER': self.available_side_upper,
-        }
-        
-        # If preference is given and available, return it
-        if preference and berth_availability.get(preference, 0) > 0:
-            return preference
-        
-        # Otherwise, return first available berth type
-        for berth_type, count in berth_availability.items():
-            if count > 0:
-                return berth_type
-        
-        return None
+    @property
+    def available_seats(self):
+        """Calculate available seats dynamically"""
+        booked_count = self.passengers.filter(
+            current_status__in=['CONFIRMED', 'RAC', 'WAITING']
+        ).count()
+        return self.total_seats - booked_count
     
-    def allocate_berth(self, berth_type):
-        """Decrease available berth count when allocated"""
-        if berth_type == 'LOWER':
-            self.available_lower -= 1
-        elif berth_type == 'MIDDLE':
-            self.available_middle -= 1
-        elif berth_type == 'UPPER':
-            self.available_upper -= 1
-        elif berth_type == 'SIDE_LOWER':
-            self.available_side_lower -= 1
-        elif berth_type == 'SIDE_UPPER':
-            self.available_side_upper -= 1
-        self.available_seats -= 1
-        self.save()
-
+    @property
+    def available_lower(self):
+        booked = self.passengers.filter(berth_type='LOWER', current_status='CONFIRMED').count()
+        return self.total_lower - booked
+    
+    @property
+    def available_middle(self):
+        booked = self.passengers.filter(berth_type='MIDDLE', current_status='CONFIRMED').count()
+        return self.total_middle - booked
+    
+    @property
+    def available_upper(self):
+        booked = self.passengers.filter(berth_type='UPPER', current_status='CONFIRMED').count()
+        return self.total_upper - booked
+    
+    @property
+    def available_side_lower(self):
+        booked = self.passengers.filter(berth_type='SIDE_LOWER', current_status='CONFIRMED').count()
+        return self.total_side_lower - booked
+    
+    @property
+    def available_side_upper(self):
+        booked = self.passengers.filter(berth_type='SIDE_UPPER', current_status='CONFIRMED').count()
+        return self.total_side_upper - booked
 
 class Passenger(models.Model):
+    """Model for individual passengers"""
     GENDER_CHOICES = [
         ('M', 'Male'),
         ('F', 'Female'),
         ('O', 'Other'),
     ]
     
-    SEAT_CLASS_CHOICES = [
-        ('SLEEPER', 'Sleeper'),
-        ('AC_3_TIER', 'AC 3 Tier'),
-        ('AC_2_TIER', 'AC 2 Tier'),
-        ('AC_1_TIER', 'AC 1 Tier'),
-        ('FIRST_CLASS', 'First Class'),
-    ]
-    
-    BERTH_TYPE_CHOICES = [
-        ('LOWER', 'Lower Berth'),
-        ('MIDDLE', 'Middle Berth'),
-        ('UPPER', 'Upper Berth'),
-        ('SIDE_LOWER', 'Side Lower Berth'),
-        ('SIDE_UPPER', 'Side Upper Berth'),
+    BERTH_CHOICES = [
+        ('LOWER', 'Lower'),
+        ('MIDDLE', 'Middle'),
+        ('UPPER', 'Upper'),
+        ('SIDE_LOWER', 'Side Lower'),
+        ('SIDE_UPPER', 'Side Upper'),
     ]
     
     STATUS_CHOICES = [
         ('CONFIRMED', 'Confirmed'),
+        ('RAC', 'RAC'),
         ('WAITING', 'Waiting List'),
         ('CANCELLED', 'Cancelled'),
     ]
     
-    ticket = models.ForeignKey('Ticket', on_delete=models.CASCADE, related_name='passengers')
+    ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE, related_name='passengers')
     name = models.CharField(max_length=100)
     age = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(120)])
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
-    seat_class = models.CharField(max_length=20, choices=SEAT_CLASS_CHOICES, default='SLEEPER')
-    coach = models.ForeignKey('Coach', on_delete=models.SET_NULL, null=True, blank=True)
-    seat_number = models.CharField(max_length=10, blank=True)
-    berth_type = models.CharField(max_length=15, choices=BERTH_TYPE_CHOICES, blank=True, null=True)
+    seat_class = models.CharField(max_length=20, choices=[
+        ('SLEEPER', 'Sleeper'),
+        ('AC_3_TIER', 'AC 3 Tier'),
+        ('AC_2_TIER', 'AC 2 Tier'),
+        ('AC_1_TIER', 'AC 1 Tier'),
+        ('GENERAL', 'General'),
+        ('FIRST_CLASS', 'First Class'),
+    ])
+    fare = models.DecimalField(max_digits=10, decimal_places=2, default=0)  # Add this line
+    coach = models.ForeignKey(
+        'Coach', 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True,
+        related_name='passengers'  # ADD THIS LINE
+    )
+    seat_number = models.CharField(max_length=10, blank=True, null=True)
+    berth_type = models.CharField(max_length=20, choices=BERTH_CHOICES, blank=True, null=True)
     current_status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='CONFIRMED')
-    booking_date = models.DateTimeField(default=timezone.now)
-
-    class Meta:
-        ordering = ['ticket', 'id']
-        constraints = [
-            models.UniqueConstraint(
-                fields=['coach', 'seat_number'],
-                name='unique_seat_per_coach',
-                condition=~models.Q(seat_number='')
-            )
-        ]
-
+    
     def __str__(self):
         return f"{self.name} - {self.ticket.pnr}"
-
+    
     def save(self, *args, **kwargs):
-        # Ensure ticket is set before processing seat assignment
-        if not self.seat_number and self.coach and self.ticket:
-            berth_pref = kwargs.pop('berth_preference', None)
+        """Auto-assign seat and berth when passenger is created"""
+        berth_preference = kwargs.pop('berth_preference', None)
+        
+        if not self.seat_number and self.coach:
+            # Get berth preference or auto-assign
+            available_berths = []
             
-            # Determine berth type based on coach type and availability
-            if self.coach.coach_type in ['SLEEPER', 'AC_3_TIER']:
-                # 3-tier berth pattern
-                berth_type = self.coach.get_available_berth_type(berth_pref)
+            # Check berth availability based on preference
+            if berth_preference == 'LOWER' and self.coach.available_lower > 0:
+                self.berth_type = 'LOWER'
+            elif berth_preference == 'MIDDLE' and self.coach.available_middle > 0:
+                self.berth_type = 'MIDDLE'
+            elif berth_preference == 'UPPER' and self.coach.available_upper > 0:
+                self.berth_type = 'UPPER'
+            elif berth_preference == 'SIDE_LOWER' and self.coach.available_side_lower > 0:
+                self.berth_type = 'SIDE_LOWER'
+            elif berth_preference == 'SIDE_UPPER' and self.coach.available_side_upper > 0:
+                self.berth_type = 'SIDE_UPPER'
+            else:
+                # Auto-assign any available berth
+                if self.coach.available_lower > 0:
+                    self.berth_type = 'LOWER'
+                elif self.coach.available_middle > 0:
+                    self.berth_type = 'MIDDLE'
+                elif self.coach.available_upper > 0:
+                    self.berth_type = 'UPPER'
+                elif self.coach.available_side_lower > 0:
+                    self.berth_type = 'SIDE_LOWER'
+                elif self.coach.available_side_upper > 0:
+                    self.berth_type = 'SIDE_UPPER'
+            
+            # Generate seat number
+            if self.berth_type:
+                # Count existing seats of this berth type in this coach
+                existing_count = Passenger.objects.filter(
+                    coach=self.coach,
+                    berth_type=self.berth_type,
+                    current_status='CONFIRMED'
+                ).count()
                 
-                if berth_type:
-                    # Get the next seat number for this berth type
-                    seat_number = self._get_next_seat_for_berth(berth_type)
-                    
-                    if seat_number:
-                        self.seat_number = str(seat_number)
-                        self.berth_type = berth_type
-                        self.coach.allocate_berth(berth_type)
-                        self.current_status = 'CONFIRMED'
-                    else:
-                        self.current_status = 'WAITING'
-                else:
-                    self.current_status = 'WAITING'
-                
-            elif self.coach.coach_type == 'AC_2_TIER':
-                # 2-tier berth pattern (no middle berth)
-                berth_type = self.coach.get_available_berth_type(berth_pref)
-                
-                if berth_type:
-                    seat_number = self._get_next_seat_for_berth(berth_type)
-                    
-                    if seat_number:
-                        self.seat_number = str(seat_number)
-                        self.berth_type = berth_type
-                        self.coach.allocate_berth(berth_type)
-                        self.current_status = 'CONFIRMED'
-                    else:
-                        self.current_status = 'WAITING'
-                else:
-                    self.current_status = 'WAITING'
-                
-            elif self.coach.coach_type == 'AC_1_TIER':
-                # 1-tier (only lower and upper)
-                berth_type = self.coach.get_available_berth_type(berth_pref)
-                
-                if berth_type:
-                    seat_number = self._get_next_seat_for_berth(berth_type)
-                    
-                    if seat_number:
-                        self.seat_number = str(seat_number)
-                        self.berth_type = berth_type
-                        self.coach.allocate_berth(berth_type)
-                        self.current_status = 'CONFIRMED'
-                    else:
-                        self.current_status = 'WAITING'
-                else:
-                    self.current_status = 'WAITING'
-    
+                # Generate seat number (e.g., "12L" for 12th Lower berth)
+                berth_code = {
+                    'LOWER': 'L',
+                    'MIDDLE': 'M',
+                    'UPPER': 'U',
+                    'SIDE_LOWER': 'SL',
+                    'SIDE_UPPER': 'SU',
+                }
+                self.seat_number = f"{existing_count + 1}{berth_code.get(self.berth_type, '')}"
+        
         super().save(*args, **kwargs)
-
-    def _get_next_seat_for_berth(self, berth_type):
-        """Get the next available seat number for a specific berth type"""
-        # Get all occupied seats for this coach on this specific schedule
-        occupied_seats = set(Passenger.objects.filter(
-            coach=self.coach,
-            ticket__schedule=self.ticket.schedule,
-            current_status__in=['CONFIRMED', 'WAITING']
-        ).exclude(
-            id=self.id  # Exclude current passenger if updating
-        ).values_list('seat_number', flat=True))
-        
-        if self.coach.coach_type in ['SLEEPER', 'AC_3_TIER']:
-            # 72 seats: Main berths (1-63) + Side berths (64-72)
-            if berth_type == 'LOWER':
-                seats = [i for i in range(1, 64, 3)]
-            elif berth_type == 'MIDDLE':
-                seats = [i for i in range(2, 64, 3)]
-            elif berth_type == 'UPPER':
-                seats = [i for i in range(3, 64, 3)]
-            elif berth_type == 'SIDE_LOWER':
-                seats = [i for i in range(64, 73, 2)]
-            elif berth_type == 'SIDE_UPPER':
-                seats = [i for i in range(65, 73, 2)]
-            else:
-                return None
-            
-        elif self.coach.coach_type == 'AC_2_TIER':
-            # 48 seats: Main berths (1-42) + Side berths (43-48)
-            if berth_type == 'LOWER':
-                seats = [i for i in range(1, 43, 2)]
-            elif berth_type == 'UPPER':
-                seats = [i for i in range(2, 43, 2)]
-            elif berth_type == 'SIDE_LOWER':
-                seats = [i for i in range(43, 49, 2)]
-            elif berth_type == 'SIDE_UPPER':
-                seats = [i for i in range(44, 49, 2)]
-            else:
-                return None
-            
-        elif self.coach.coach_type == 'AC_1_TIER':
-            # 24 seats (all cabins)
-            if berth_type == 'LOWER':
-                seats = [i for i in range(1, 25, 2)]
-            elif berth_type == 'UPPER':
-                seats = [i for i in range(2, 25, 2)]
-            else:
-                return None
-        else:
-            return None
     
-        # Find first available seat
-        for seat in seats:
-            if str(seat) not in occupied_seats:
-                return seat
+    def get_fare(self):
+        """Calculate fare for this passenger based on seat class"""
+        # If fare is already saved, return it
+        if self.fare and self.fare > 0:
+            return self.fare
+            
+        try:
+            fare_obj = Fare.objects.get(
+                train=self.ticket.schedule.train,
+                source_station=self.ticket.source_station,
+                destination_station=self.ticket.destination_station
+            )
+            base_fare = fare_obj.base_fare
+        except Fare.DoesNotExist:
+            base_fare = self.ticket.schedule.base_fare
         
-        return None
+        # Class-based fare multipliers (using Decimal)
+        class_multipliers = {
+            'GENERAL': Decimal('1.0'),
+            'SLEEPER': Decimal('1.5'),
+            'AC_3_TIER': Decimal('2.0'),
+            'AC_2_TIER': Decimal('3.0'),
+            'AC_1_TIER': Decimal('5.0'),
+            'FIRST_CLASS': Decimal('6.0'),
+        }
         
+        return base_fare * class_multipliers.get(self.seat_class, Decimal('1.0'))
 
 class Payment(models.Model):
     """Model for payment transactions"""

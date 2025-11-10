@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="WhatsApp Image 2025-08-23 at 11.02.52 PM.jpeg">
+    <title>Complete Your Booking - GetSetRide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .card-input:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.3);
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <h1 class="text-3xl font-bold text-center text-gray-800 mb-2">Complete Your Booking</h1>
+        
+        <div class="bg-white p-6 rounded-xl shadow mb-6">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Journey Details</h2>
+            <div class="grid grid-cols-2 gap-4 mb-2">
+                <div>
+                    <p class="text-gray-500 text-sm">From Station</p>
+                    <p class="font-semibold" id="from-station">Loading...</p>
+                </div>
+                <div>
+                    <p class="text-gray-500 text-sm">To Station</p>
+                    <p class="font-semibold" id="to-station">Loading...</p>
+                </div>
+            </div>
+            <div class="grid grid-cols-2 gap-4 mb-2">
+                <div>
+                    <p class="text-gray-500 text-sm">Train Name</p>
+                    <p class="font-semibold" id="train-name">Loading...</p>
+                    <p class="text-sm" id="train-number">Loading...</p>
+                </div>
+                <div>
+                    <p class="text-gray-500 text-sm">Class & Passengers</p>
+                    <p class="font-semibold" id="travel-class">Loading...</p>
+                    <p class="text-sm" id="passengers">Loading...</p>
+                </div>
+            </div>
+            <div class="mt-4 pt-4 border-t">
+                <p class="text-gray-500 text-sm">Journey Date</p>
+                <p class="font-semibold" id="journey-date">Loading...</p>
+            </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-xl shadow mb-6">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Payment Information</h2>
+            
+            <form id="payment-form">
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-medium mb-2" for="card-number">
+                        Card Number
+                    </label>
+                    <input type="text" id="card-number" name="card-number" 
+                           class="card-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                           placeholder="1234 5678 9012 3456" maxlength="19" required>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div>
+                        <label class="block text-gray-700 text-sm font-medium mb-2" for="expiry-date">
+                            Expiry Date
+                        </label>
+                        <input type="text" id="expiry-date" name="expiry-date" 
+                               class="card-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                               placeholder="MM/YY" maxlength="5" required>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 text-sm font-medium mb-2" for="cvv">
+                            CVV
+                        </label>
+                        <input type="text" id="cvv" name="cvv" 
+                               class="card-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                               placeholder="123" maxlength="3" required>
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-medium mb-2" for="card-name">
+                        Name on Card
+                    </label>
+                    <input type="text" id="card-name" name="card-name" 
+                           class="card-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                           placeholder="Enter your card name here" required>
+                </div>
+
+                <div class="flex items-center justify-between mt-8">
+                    <a href="#" id="back-link" class="text-indigo-600 font-medium hover:text-indigo-800 transition duration-300">
+                        ← Back to trains
+                    </a>
+                    <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-lg transition duration-300">
+                        Pay Now & Confirm Booking
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const fromStation = urlParams.get('from') || '';
+            const toStation = urlParams.get('to') || '';
+            const journeyDate = urlParams.get('date') || '';
+            const travelClass = urlParams.get('class') || '';
+            const passengers = urlParams.get('passengers') || '1';
+            const trainName = urlParams.get('trainName') || '';
+            const trainNumber = urlParams.get('trainNumber') || '';
+            
+            // Update page with journey details
+            document.getElementById('from-station').textContent = fromStation;
+            document.getElementById('to-station').textContent = toStation;
+            document.getElementById('journey-date').textContent = journeyDate;
+            document.getElementById('travel-class').textContent = travelClass;
+            document.getElementById('passengers').textContent = `${passengers} ${passengers === '1' ? 'Passenger' : 'Passengers'}`;
+            document.getElementById('train-name').textContent = trainName;
+            document.getElementById('train-number').textContent = `Number: ${trainNumber}`;
+            
+            // Set up back link to return to trains page with previous search parameters
+            const backLink = document.getElementById('back-link');
+            backLink.href = `available_trains.html?from_station=${encodeURIComponent(fromStation)}&to_station=${encodeURIComponent(toStation)}&journey_date=${encodeURIComponent(journeyDate)}&class=${encodeURIComponent(travelClass)}&passengers=${encodeURIComponent(passengers)}`;
+            
+            // Format card number input (add spaces after every 4 digits)
+            const cardNumberInput = document.getElementById('card-number');
+            cardNumberInput.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+                let formattedValue = '';
+                
+                for (let i = 0; i < value.length; i++) {
+                    if (i > 0 && i % 4 === 0) {
+                        formattedValue += ' ';
+                    }
+                    formattedValue += value[i];
+                }
+                
+                e.target.value = formattedValue;
+            });
+            
+            // Format expiry date input (add slash after 2 digits)
+            const expiryInput = document.getElementById('expiry-date');
+            expiryInput.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+                
+                if (value.length > 2) {
+                    e.target.value = value.substring(0, 2) + '/' + value.substring(2, 4);
+                }
+            });
+            
+            // Only allow numbers in CVV field
+            const cvvInput = document.getElementById('cvv');
+            cvvInput.addEventListener('input', function(e) {
+                e.target.value = e.target.value.replace(/\D/g, '');
+            });
+            
+            // Handle form submission
+            const paymentForm = document.getElementById('payment-form');
+            paymentForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Basic validation
+                const cardNumber = cardNumberInput.value.replace(/\s/g, '');
+                const expiryDate = expiryInput.value;
+                const cvv = cvvInput.value;
+                const cardName = document.getElementById('card-name').value;
+                
+                if (cardNumber.length !== 16) {
+                    alert('Please enter a valid 16-digit card number');
+                    return;
+                }
+                
+                if (!expiryDate.includes('/') || expiryDate.length !== 5) {
+                    alert('Please enter a valid expiry date in MM/YY format');
+                    return;
+                }
+                
+                if (cvv.length !== 3) {
+                    alert('Please enter a valid 3-digit CVV');
+                    return;
+                }
+                
+                if (cardName.trim().length < 3) {
+                    alert('Please enter the name on your card');
+                    return;
+                }
+                
+                // In a real application, this would process the payment
+                alert(`Payment processing for ${trainName} (${trainNumber}). This would connect to a payment gateway in a real application.`);
+                
+                // Redirect to a confirmation page (would be implemented in a real application)
+                // window.location.href = `booking_confirmation.html?from=${encodeURIComponent(fromStation)}&to=${encodeURIComponent(toStation)}&date=${encodeURIComponent(journeyDate)}&class=${encodeURIComponent(travelClass)}&passengers=${encodeURIComponent(passengers)}&trainName=${encodeURIComponent(trainName)}&trainNumber=${encodeURIComponent(trainNumber)}`;
+            });
+        });
+    </script>
+</body>
+
+</html>

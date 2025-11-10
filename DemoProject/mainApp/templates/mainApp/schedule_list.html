@@ -4,39 +4,99 @@
     <title>Available Schedules</title>
 </head>
 <body>
-    <h2>Available Schedules</h2>
-    <p>Train: {{ train.name }} ({{ train.train_number }})</p>
-    <p>Route: {{ from_station.name }} → {{ to_station.name }}</p>
-    <p>Departure Time: {{ departure_time|default:"N/A" }} | Arrival Time: {{ arrival_time|default:"N/A" }}</p>
-    
-    {% if schedules %}
-        <table border="1">
-            <thead>
-                <tr>
-                    <th>Journey Date</th>
-                    <th>Available Seats</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for schedule in schedules %}
-                <tr>
-                    <td>{{ schedule.journey_date }}</td>
-                    <td>{{ schedule.train.available_seats }}</td>
-                    <td>{{ schedule.status }}</td>
-                    <td>
-                        <a href="{% url 'select_schedule' schedule.id from_station.id to_station.id %}">Book</a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p>No schedules available for the selected date.</p>
-    {% endif %}
-    
-    <br>
-    <a href="{% url 'select_destinations' %}">Back to Search</a>
+    {% extends 'mainApp/base.html' %}
+
+    {% block title %}Available Schedules{% endblock %}
+
+    {% block content %}
+    <div class="max-w-6xl mx-auto">
+        <div class="glass-effect rounded-2xl shadow-2xl p-8 mb-8">
+            <h1 class="text-4xl font-bold text-center bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-2">
+                Available Schedules
+            </h1>
+            <p class="text-center text-gray-600 mb-8">
+                {{ from_station.name }} → {{ to_station.name }}
+                {% if journey_date %}
+                    | {{ journey_date|date:"d M Y" }}
+                {% endif %}
+            </p>
+
+            {% if schedules %}
+                <div class="space-y-6">
+                    {% for schedule in schedules %}
+                    <div class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition duration-300 overflow-hidden border-2 border-indigo-100">
+                        <div class="p-6">
+                            <div class="flex justify-between items-start mb-4">
+                                <div>
+                                    <h3 class="text-2xl font-bold text-gray-800">{{ schedule.train.name }}</h3>
+                                    <p class="text-gray-600">Train #{{ schedule.train.train_number }}</p>
+                                    <span class="inline-block mt-2 px-3 py-1 bg-indigo-100 text-indigo-800 rounded-full text-sm font-semibold">
+                                        {{ schedule.train.get_train_type_display }}
+                                    </span>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-3xl font-bold text-indigo-600">₹{{ schedule.base_fare|default:"N/A" }}</div>
+                                    <p class="text-gray-500 text-sm">Base Fare</p>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                                <div class="bg-gradient-to-r from-indigo-50 to-purple-50 p-3 rounded-lg">
+                                    <p class="text-gray-600 text-sm">Journey Date</p>
+                                    <p class="font-bold text-gray-800">{{ schedule.journey_date|date:"d M Y" }}</p>
+                                </div>
+                                <div class="bg-gradient-to-r from-indigo-50 to-purple-50 p-3 rounded-lg">
+                                    <p class="text-gray-600 text-sm">Total Seats</p>
+                                    <p class="font-bold text-gray-800">{{ schedule.get_total_seats }}</p>
+                                </div>
+                                <div class="bg-gradient-to-r from-indigo-50 to-purple-50 p-3 rounded-lg">
+                                    <p class="text-gray-600 text-sm">Available Seats</p>
+                                    <p class="font-bold text-green-600">{{ schedule.get_available_seats }}</p>
+                                </div>
+                                <div class="bg-gradient-to-r from-indigo-50 to-purple-50 p-3 rounded-lg">
+                                    <p class="text-gray-600 text-sm">Status</p>
+                                    <p class="font-bold {% if schedule.get_available_seats > 0 %}text-green-600{% else %}text-red-600{% endif %}">
+                                        {% if schedule.get_available_seats > 0 %}Available{% else %}Full{% endif %}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="text-center">
+                                {% if schedule.get_available_seats > 0 %}
+                                    <a 
+                                        href="{% url 'select_schedule' schedule.id from_station.id to_station.id %}"
+                                        class="inline-block px-8 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-300"
+                                    >
+                                        Book Now →
+                                    </a>
+                                {% else %}
+                                    <button 
+                                        disabled
+                                        class="inline-block px-8 py-3 bg-gray-400 text-white font-bold rounded-full cursor-not-allowed opacity-50"
+                                    >
+                                        Fully Booked
+                                    </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center py-12">
+                    <div class="text-6xl mb-4">😞</div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-2">No Schedules Available</h3>
+                    <p class="text-gray-600 mb-6">No trains found for the selected route and date.</p>
+                    <a 
+                        href="{% url 'select_destinations' %}"
+                        class="inline-block px-8 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-300"
+                    >
+                        ← Search Again
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endblock %}
 </body>
 </html>

@@ -9,6 +9,14 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         self.stdout.write('Seeding database...')
         
+        # Clear existing data
+        Coach.objects.all().delete()
+        TrainSchedule.objects.all().delete()
+        Fare.objects.all().delete()
+        TrainRoute.objects.all().delete()
+        Train.objects.all().delete()
+        Station.objects.all().delete()
+        
         # Create stations
         delhi = Station.objects.create(code='DEL', name='Delhi Junction', city='Delhi', state='Delhi')
         mumbai = Station.objects.create(code='MUM', name='Mumbai Central', city='Mumbai', state='Maharashtra')
@@ -30,116 +38,136 @@ class Command(BaseCommand):
         # Sleeper coach: 72 seats = 18 lower + 18 middle + 18 upper + 9 side lower + 9 side upper
         for i in range(1, 9):
             Coach.objects.create(
-                train=train1, coach_number=f'S{i}', coach_type='SLEEPER',
-                total_seats=72, available_seats=72,
-                total_lower=18, available_lower=18,
-                total_middle=18, available_middle=18,
-                total_upper=18, available_upper=18,
-                total_side_lower=9, available_side_lower=9,
-                total_side_upper=9, available_side_upper=9
+                train=train1, 
+                coach_number=f'S{i}', 
+                coach_type='SLEEPER',
+                total_seats=72,
+                total_lower=18,
+                total_middle=18,
+                total_upper=18,
+                total_side_lower=9,
+                total_side_upper=9
             )
         
         # AC 3 Tier: 64 seats = 16 lower + 16 middle + 16 upper + 8 side lower + 8 side upper
         for i in range(1, 5):
             Coach.objects.create(
-                train=train1, coach_number=f'B{i}', coach_type='AC_3_TIER',
-                total_seats=64, available_seats=64,
-                total_lower=16, available_lower=16,
-                total_middle=16, available_middle=16,
-                total_upper=16, available_upper=16,
-                total_side_lower=8, available_side_lower=8,
-                total_side_upper=8, available_side_upper=8
+                train=train1, 
+                coach_number=f'B{i}', 
+                coach_type='AC_3_TIER',
+                total_seats=64,
+                total_lower=16,
+                total_middle=16,
+                total_upper=16,
+                total_side_lower=8,
+                total_side_upper=8
             )
 
         # AC 3 Tier coaches for train2
         for i in range(1, 7):
             Coach.objects.create(
-                train=train2, coach_number=f'B{i}', coach_type='AC_3_TIER',
-                total_seats=64, available_seats=64,
-                total_lower=16, available_lower=16,
-                total_middle=16, available_middle=16,
-                total_upper=16, available_upper=16,
-                total_side_lower=8, available_side_lower=8,
-                total_side_upper=8, available_side_upper=8
+                train=train2, 
+                coach_number=f'B{i}', 
+                coach_type='AC_3_TIER',
+                total_seats=64,
+                total_lower=16,
+                total_middle=16,
+                total_upper=16,
+                total_side_lower=8,
+                total_side_upper=8
             )
         
         # AC 2 Tier: 48 seats = 16 lower + 16 upper + 8 side lower + 8 side upper
         for i in range(1, 5):
             Coach.objects.create(
-                train=train2, coach_number=f'A{i}', coach_type='AC_2_TIER',
-                total_seats=48, available_seats=48,
-                total_lower=16, available_lower=16,
-                total_upper=16, available_upper=16,
-                total_side_lower=8, available_side_lower=8,
-                total_side_upper=8, available_side_upper=8
+                train=train2, 
+                coach_number=f'A{i}', 
+                coach_type='AC_2_TIER',
+                total_seats=48,
+                total_lower=16,
+                total_upper=16,
+                total_side_lower=8,
+                total_side_upper=8
             )
 
         # AC 1 Tier: 24 seats = 12 lower + 12 upper
         for i in range(1, 3):
             Coach.objects.create(
-                train=train3, coach_number=f'H{i}', coach_type='AC_1_TIER',
-                total_seats=24, available_seats=24,
-                total_lower=12, available_lower=12,
-                total_upper=12, available_upper=12
+                train=train3, 
+                coach_number=f'H{i}', 
+                coach_type='AC_1_TIER',
+                total_seats=24,
+                total_lower=12,
+                total_upper=12
             )
         
         # AC 2 Tier for train3
         for i in range(1, 4):
             Coach.objects.create(
-                train=train3, coach_number=f'A{i}', coach_type='AC_2_TIER',
-                total_seats=48, available_seats=48,
-                total_lower=16, available_lower=16,
-                total_upper=16, available_upper=16,
-                total_side_lower=8, available_side_lower=8,
-                total_side_upper=8, available_side_upper=8
+                train=train3, 
+                coach_number=f'A{i}', 
+                coach_type='AC_2_TIER',
+                total_seats=48,
+                total_lower=16,
+                total_upper=16,
+                total_side_lower=8,
+                total_side_upper=8
             )
         
         # AC 3 Tier for train3
         for i in range(1, 4):
             Coach.objects.create(
-                train=train3, coach_number=f'B{i}', coach_type='AC_3_TIER',
-                total_seats=64, available_seats=64,
-                total_lower=16, available_lower=16,
-                total_middle=16, available_middle=16,
-                total_upper=16, available_upper=16,
-                total_side_lower=8, available_side_lower=8,
-                total_side_upper=8, available_side_upper=8
+                train=train3, 
+                coach_number=f'B{i}', 
+                coach_type='AC_3_TIER',
+                total_seats=64,
+                total_lower=16,
+                total_middle=16,
+                total_upper=16,
+                total_side_lower=8,
+                total_side_upper=8
             )
 
         # Sleeper coaches for train4
         for i in range(1, 9):
             Coach.objects.create(
-                train=train4, coach_number=f'S{i}', coach_type='SLEEPER',
-                total_seats=72, available_seats=72,
-                total_lower=18, available_lower=18,
-                total_middle=18, available_middle=18,
-                total_upper=18, available_upper=18,
-                total_side_lower=9, available_side_lower=9,
-                total_side_upper=9, available_side_upper=9
+                train=train4, 
+                coach_number=f'S{i}', 
+                coach_type='SLEEPER',
+                total_seats=72,
+                total_lower=18,
+                total_middle=18,
+                total_upper=18,
+                total_side_lower=9,
+                total_side_upper=9
             )
         
         # AC 3 Tier for train4
         for i in range(1, 5):
             Coach.objects.create(
-                train=train4, coach_number=f'B{i}', coach_type='AC_3_TIER',
-                total_seats=64, available_seats=64,
-                total_lower=16, available_lower=16,
-                total_middle=16, available_middle=16,
-                total_upper=16, available_upper=16,
-                total_side_lower=8, available_side_lower=8,
-                total_side_upper=8, available_side_upper=8
+                train=train4, 
+                coach_number=f'B{i}', 
+                coach_type='AC_3_TIER',
+                total_seats=64,
+                total_lower=16,
+                total_middle=16,
+                total_upper=16,
+                total_side_lower=8,
+                total_side_upper=8
             )
 
         # AC 3 Tier for train5
         for i in range(1, 11):
             Coach.objects.create(
-                train=train5, coach_number=f'G{i}', coach_type='AC_3_TIER',
-                total_seats=64, available_seats=64,
-                total_lower=16, available_lower=16,
-                total_middle=16, available_middle=16,
-                total_upper=16, available_upper=16,
-                total_side_lower=8, available_side_lower=8,
-                total_side_upper=8, available_side_upper=8
+                train=train5, 
+                coach_number=f'G{i}', 
+                coach_type='AC_3_TIER',
+                total_seats=64,
+                total_lower=16,
+                total_middle=16,
+                total_upper=16,
+                total_side_lower=8,
+                total_side_upper=8
             )
 
         # Create routes
@@ -160,13 +188,16 @@ class Command(BaseCommand):
         TrainRoute.objects.create(train=train5, station=ahmedabad, sequence_number=2, arrival_time=time(6, 0), departure_time=None, distance_from_source=1200, platform_number='11')
 
         # Create schedules
-        today = timezone.localdate()
-        tomorrow = today + timedelta(days=1)
-        day_after = today + timedelta(days=2)
-        for tr in [train1, train2, train3, train4, train5]:
-            TrainSchedule.objects.create(train=tr, journey_date=today, status='SCHEDULED')
-            TrainSchedule.objects.create(train=tr, journey_date=tomorrow, status='SCHEDULED')
-            TrainSchedule.objects.create(train=tr, journey_date=day_after, status='SCHEDULED')
+        base_date = timezone.now().date()
+        for train in [train1, train2, train3, train4, train5]:
+            for i in range(7):
+                journey_date = base_date + timedelta(days=i)
+                TrainSchedule.objects.create(
+                    train=train,
+                    journey_date=journey_date,
+                    status='SCHEDULED',
+                    base_fare=500 + (i * 50)
+                )
 
         # Create fares
         Fare.objects.create(train=train1, source_station=delhi, destination_station=agra, distance=200, base_fare=500, reservation_charge=20, tatkal_charge=50)
@@ -178,3 +209,7 @@ class Command(BaseCommand):
         Fare.objects.create(train=train5, source_station=bangalore, destination_station=ahmedabad, distance=1200, base_fare=1600, reservation_charge=40, tatkal_charge=80)
 
         self.stdout.write(self.style.SUCCESS('Seeding complete!'))
+        self.stdout.write(self.style.SUCCESS(f'Created {Station.objects.count()} stations'))
+        self.stdout.write(self.style.SUCCESS(f'Created {Train.objects.count()} trains'))
+        self.stdout.write(self.style.SUCCESS(f'Created {Coach.objects.count()} coaches'))
+        self.stdout.write(self.style.SUCCESS(f'Created {TrainSchedule.objects.count()} schedules'))

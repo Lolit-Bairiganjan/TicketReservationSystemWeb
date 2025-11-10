@@ -1,69 +1,309 @@
-<h2>Buy Ticket</h2>
-{% if existing_ticket %}
-<div style="background-color: #d4edda; padding: 10px; margin-bottom: 20px; border: 1px solid #c3e6cb; border-radius: 5px;">
-    <strong>Adding passengers to existing PNR: {{ existing_ticket.pnr }}</strong>
-    <p>Current passengers: {{ existing_ticket.passengers.count }}</p>
-</div>
-{% endif %}
-<p>{{ schedule.train.name }} ({{ schedule.train.train_number }})</p>
-<p>{{ from_station.code }} → {{ to_station.code }}</p>
-<p>Date: {{ schedule.journey_date }} | Price: ₹{{ price }} per passenger</p>
-<form method="post" id="booking-form">
-  {% csrf_token %}
-  {{ formset.management_form }}
-  {% for passenger_form in formset %}
-    <div class="passenger-form">
-      {{ passenger_form.as_p }}
+{% extends 'mainApp/base.html' %}
+
+{% block title %}Book Ticket{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto">
+    <div class="glass-effect rounded-2xl shadow-2xl p-8 mb-8">
+        <h1 class="text-4xl font-bold text-center bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-8">
+            🎫 Book Your Ticket
+        </h1>
+
+        <!-- Journey Summary -->
+        <div class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl p-6 mb-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <p class="text-indigo-200 text-sm">Train</p>
+                    <p class="font-bold text-lg">{{ schedule.train.name }}</p>
+                    <p class="text-indigo-200 text-sm">#{{ schedule.train.train_number }}</p>
+                </div>
+                <div>
+                    <p class="text-indigo-200 text-sm">Route</p>
+                    <p class="font-bold text-lg">{{ from_station.name }} → {{ to_station.name }}</p>
+                </div>
+                <div>
+                    <p class="text-indigo-200 text-sm">Journey Date</p>
+                    <p class="font-bold text-lg">{{ schedule.journey_date|date:"d M Y" }}</p>
+                </div>
+            </div>
+        </div>
+
+        <form method="post" action="" id="bookingForm" class="space-y-6">
+            {% csrf_token %}
+
+            <!-- Passenger Details Section -->
+            <div class="bg-white rounded-xl p-6 shadow-md border-2 border-indigo-100">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                    <span class="bg-indigo-600 text-white w-8 h-8 rounded-full flex items-center justify-center mr-3">1</span>
+                    Passenger Details
+                </h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Passenger Name -->
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">
+                            👤 Passenger Name *
+                        </label>
+                        <input 
+                            type="text" 
+                            name="name" 
+                            required 
+                            placeholder="Enter full name"
+                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition duration-200"
+                        >
+                    </div>
+
+                    <!-- Age -->
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">
+                            🎂 Age *
+                        </label>
+                        <input 
+                            type="number" 
+                            name="age" 
+                            required 
+                            min="1" 
+                            max="120"
+                            placeholder="Enter age"
+                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition duration-200"
+                        >
+                    </div>
+
+                    <!-- Gender -->
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">
+                            ⚧ Gender *
+                        </label>
+                        <select 
+                            name="gender" 
+                            required
+                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition duration-200"
+                        >
+                            <option value="">Select Gender</option>
+                            <option value="M">Male</option>
+                            <option value="F">Female</option>
+                            <option value="O">Other</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Class and Coach Selection -->
+            <div class="bg-white rounded-xl p-6 shadow-md border-2 border-indigo-100">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                    <span class="bg-indigo-600 text-white w-8 h-8 rounded-full flex items-center justify-center mr-3">2</span>
+                    Select Class & Coach
+                </h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Class Selection -->
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">
+                            💺 Travel Class *
+                        </label>
+                        <select 
+                            name="seat_class" 
+                            id="seat_class"
+                            required
+                            onchange="updateCoaches()"
+                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition duration-200"
+                        >
+                            <option value="">Select Class</option>
+                            {% for class in available_seat_classes %}
+                                <option value="{{ class.value }}">{{ class.display }}</option>
+                            {% endfor %}
+                        </select>
+                        <p class="text-sm text-gray-500 mt-1">Only classes available on this train are shown</p>
+                    </div>
+
+                    <!-- Coach Selection -->
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">
+                            🚃 Select Coach *
+                        </label>
+                        <select 
+                            name="coach" 
+                            id="coach"
+                            required
+                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition duration-200"
+                        >
+                            <option value="">First select a class</option>
+                        </select>
+                        <p class="text-sm text-gray-500 mt-1" id="coach-hint">Please select a travel class first</p>
+                    </div>
+
+                    <!-- Berth Preference -->
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">
+                            🛏️ Berth Preference
+                        </label>
+                        <select 
+                            name="berth_preference"
+                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition duration-200"
+                        >
+                            <option value="">No Preference</option>
+                            <option value="LOWER">Lower Berth</option>
+                            <option value="MIDDLE">Middle Berth</option>
+                            <option value="UPPER">Upper Berth</option>
+                            <option value="SIDE_LOWER">Side Lower</option>
+                            <option value="SIDE_UPPER">Side Upper</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Coach Availability Info -->
+                <div id="coach-info" class="mt-4 p-4 bg-blue-50 rounded-lg hidden">
+                    <p class="text-sm text-blue-800">
+                        <strong>💡 Tip:</strong> Select a coach with higher availability for better seat allocation.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Contact Information -->
+            <div class="bg-white rounded-xl p-6 shadow-md border-2 border-indigo-100">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                    <span class="bg-indigo-600 text-white w-8 h-8 rounded-full flex items-center justify-center mr-3">3</span>
+                    Contact Information
+                </h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Email -->
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">
+                            📧 Email Address
+                        </label>
+                        <input 
+                            type="email" 
+                            name="email" 
+                            placeholder="your.email@example.com"
+                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition duration-200"
+                        >
+                    </div>
+
+                    <!-- Mobile -->
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">
+                            📱 Mobile Number
+                        </label>
+                        <input 
+                            type="tel" 
+                            name="mobile" 
+                            placeholder="10-digit mobile number"
+                            pattern="[0-9]{10}"
+                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition duration-200"
+                        >
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit Buttons -->
+            <div class="flex gap-4 justify-center flex-wrap">
+                <button 
+                    type="submit"
+                    class="px-12 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-lg font-bold rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-300"
+                >
+                    🎫 Book Ticket
+                </button>
+                <a 
+                    href="{% url 'select_destinations' %}"
+                    class="px-12 py-4 bg-gradient-to-r from-gray-600 to-gray-700 text-white text-lg font-bold rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-300"
+                >
+                    ← Back to Search
+                </a>
+            </div>
+        </form>
     </div>
-  {% endfor %}
-  <button type="submit">Book Ticket</button>
-</form>
+
+    <!-- Information Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+        <div class="glass-effect rounded-xl p-6 text-center transform hover:scale-105 transition duration-300">
+            <div class="text-4xl mb-3">🔒</div>
+            <h3 class="font-bold text-gray-800 mb-2">Secure Booking</h3>
+            <p class="text-gray-600 text-sm">Your data is safe with us</p>
+        </div>
+        <div class="glass-effect rounded-xl p-6 text-center transform hover:scale-105 transition duration-300">
+            <div class="text-4xl mb-3">⚡</div>
+            <h3 class="font-bold text-gray-800 mb-2">Instant PNR</h3>
+            <p class="text-gray-600 text-sm">Get confirmation immediately</p>
+        </div>
+        <div class="glass-effect rounded-xl p-6 text-center transform hover:scale-105 transition duration-300">
+            <div class="text-4xl mb-3">💳</div>
+            <h3 class="font-bold text-gray-800 mb-2">Easy Cancellation</h3>
+            <p class="text-gray-600 text-sm">Cancel anytime before journey</p>
+        </div>
+    </div>
+</div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Store original coach options for each form
-    const coachSelects = document.querySelectorAll('select[name$="-coach"]');
-    const coachOptions = {};
+// Coach data from backend
+const coachesByClass = {{ coaches_by_class|safe }};
+
+function updateCoaches() {
+    const seatClass = document.getElementById('seat_class').value;
+    const coachSelect = document.getElementById('coach');
+    const coachHint = document.getElementById('coach-hint');
+    const coachInfo = document.getElementById('coach-info');
     
-    coachSelects.forEach((select, index) => {
-        coachOptions[index] = Array.from(select.options).map(opt => ({
-            value: opt.value,
-            text: opt.text,
-            coachType: opt.text.match(/\((.*?)\)/)?.[1] || ''
-        }));
-    });
+    // Clear existing options
+    coachSelect.innerHTML = '';
     
-    // Map seat class to coach type
-    const seatClassToCoachType = {
-        'SLEEPER': 'SLEEPER',
-        'AC_3_TIER': 'AC_3_TIER',
-        'AC_2_TIER': 'AC_2_TIER',
-        'AC_1_TIER': 'AC_1_TIER',
-        'FIRST_CLASS': 'FIRST_CLASS'
-    };
+    if (!seatClass) {
+        const option = document.createElement('option');
+        option.value = '';
+        option.textContent = 'First select a class';
+        coachSelect.appendChild(option);
+        coachHint.textContent = 'Please select a travel class first';
+        coachInfo.classList.add('hidden');
+        return;
+    }
     
-    // Filter coaches when seat class changes
-    document.querySelectorAll('select[name$="-seat_class"]').forEach((seatClassSelect, index) => {
-        seatClassSelect.addEventListener('change', function() {
-            const selectedSeatClass = this.value;
-            const coachSelect = coachSelects[index];
-            const expectedCoachType = seatClassToCoachType[selectedSeatClass];
+    if (coachesByClass[seatClass] && coachesByClass[seatClass].length > 0) {
+        // Add placeholder
+        const placeholder = document.createElement('option');
+        placeholder.value = '';
+        placeholder.textContent = 'Select a coach';
+        coachSelect.appendChild(placeholder);
+        
+        // Sort coaches by availability (descending)
+        const coaches = [...coachesByClass[seatClass]].sort((a, b) => b.available - a.available);
+        
+        coaches.forEach(coach => {
+            const option = document.createElement('option');
+            option.value = coach.id;
             
-            // Clear current options
-            coachSelect.innerHTML = '<option value="">---------</option>';
+            // Show availability with visual indicator
+            const availabilityPercent = (coach.available / coach.total * 100).toFixed(0);
+            let indicator = '🟢'; // Green
+            if (availabilityPercent < 30) indicator = '🔴'; // Red
+            else if (availabilityPercent < 60) indicator = '🟡'; // Yellow
             
-            // Filter and add matching coaches
-            if (expectedCoachType && coachOptions[index]) {
-                coachOptions[index].forEach(opt => {
-                    if (opt.value && opt.coachType === expectedCoachType) {
-                        const option = new Option(opt.text, opt.value);
-                        coachSelect.add(option);
-                    }
-                });
+            option.textContent = `${indicator} ${coach.number} - ${coach.available}/${coach.total} seats available`;
+            
+            // Disable if no seats available
+            if (coach.available === 0) {
+                option.disabled = true;
+                option.textContent = `🔴 ${coach.number} - Fully Booked`;
             }
+            
+            coachSelect.appendChild(option);
         });
-    });
+        
+        coachHint.textContent = `${coaches.length} coach${coaches.length > 1 ? 'es' : ''} available for this class`;
+        coachInfo.classList.remove('hidden');
+    } else {
+        const option = document.createElement('option');
+        option.value = '';
+        option.textContent = 'No coaches available for this class';
+        option.disabled = true;
+        coachSelect.appendChild(option);
+        coachHint.textContent = 'This class is not available on this train';
+        coachInfo.classList.add('hidden');
+    }
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    updateCoaches();
 });
 </script>
-
-<a href="{% url 'schedule_list' schedule.train.id from_station.id to_station.id %}?date={{ schedule.journey_date }}">Back</a>
+{% endblock %}

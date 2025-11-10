@@ -1,0 +1,122 @@
+{% extends 'mainApp/base.html' %}
+
+{% block title %}Add More Passengers - PNR: {{ ticket.pnr }}{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto">
+    <div class="glass-effect rounded-2xl shadow-2xl p-8 mb-8">
+        <h1 class="text-4xl font-bold text-center bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-4">
+            ➕ Add More Passengers
+        </h1>
+        <p class="text-center text-gray-600 mb-8">PNR: {{ ticket.pnr }}</p>
+
+        <!-- Existing Passengers -->
+        <div class="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">Current Passengers ({{ ticket.passengers.count }})</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full bg-white rounded-lg overflow-hidden">
+                    <thead class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
+                        <tr>
+                            <th class="px-4 py-3 text-left">Name</th>
+                            <th class="px-4 py-3 text-left">Age</th>
+                            <th class="px-4 py-3 text-left">Gender</th>
+                            <th class="px-4 py-3 text-left">Coach</th>
+                            <th class="px-4 py-3 text-left">Seat</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for passenger in ticket.passengers.all %}
+                        <tr class="border-b">
+                            <td class="px-4 py-3">{{ passenger.name }}</td>
+                            <td class="px-4 py-3">{{ passenger.age }}</td>
+                            <td class="px-4 py-3">{{ passenger.get_gender_display }}</td>
+                            <td class="px-4 py-3">{{ passenger.coach.coach_number|default:"N/A" }}</td>
+                            <td class="px-4 py-3">{{ passenger.seat_number|default:"N/A" }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Add New Passenger Form -->
+        <form method="post" class="space-y-6">
+            {% csrf_token %}
+
+            <div class="bg-white rounded-xl p-6 shadow-md border-2 border-indigo-100">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">New Passenger Details</h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">👤 Name *</label>
+                        <input 
+                            type="text" 
+                            name="name" 
+                            required 
+                            placeholder="Enter full name"
+                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition duration-200"
+                        >
+                    </div>
+
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">🎂 Age *</label>
+                        <input 
+                            type="number" 
+                            name="age" 
+                            required 
+                            min="1" 
+                            max="120"
+                            placeholder="Enter age"
+                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition duration-200"
+                        >
+                    </div>
+
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">⚧ Gender *</label>
+                        <select 
+                            name="gender" 
+                            required
+                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition duration-200"
+                        >
+                            <option value="">Select Gender</option>
+                            <option value="M">Male</option>
+                            <option value="F">Female</option>
+                            <option value="O">Other</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <label class="block text-gray-700 font-semibold mb-2">🛏️ Berth Preference</label>
+                    <select 
+                        name="berth_preference"
+                        class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition duration-200"
+                    >
+                        <option value="">No Preference</option>
+                        <option value="LOWER">Lower Berth</option>
+                        <option value="MIDDLE">Middle Berth</option>
+                        <option value="UPPER">Upper Berth</option>
+                        <option value="SIDE_LOWER">Side Lower</option>
+                        <option value="SIDE_UPPER">Side Upper</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="flex gap-4 justify-center flex-wrap">
+                <button 
+                    type="submit"
+                    class="px-12 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-lg font-bold rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-300"
+                >
+                    ➕ Add Passenger
+                </button>
+                <a 
+                    href="{% url 'ticket_detail' ticket.pnr %}"
+                    class="px-12 py-4 bg-gradient-to-r from-gray-600 to-gray-700 text-white text-lg font-bold rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-300"
+                >
+                    ← Back to Ticket
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

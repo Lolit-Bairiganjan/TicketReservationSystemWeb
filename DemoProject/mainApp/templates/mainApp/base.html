@@ -1,0 +1,90 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Railway Reservation System{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .animate-gradient {
+            background-size: 200% 200%;
+            animation: gradient 15s ease infinite;
+        }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        @media print {
+            .no-print { display: none !important; }
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 animate-gradient">
+    
+    <!-- Navigation Bar -->
+    <nav class="glass-effect shadow-lg sticky top-0 z-50 no-print">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <a href="{% url 'main_page' %}" class="text-2xl font-bold text-indigo-600 hover:text-indigo-800 transition duration-300">
+                    🚂 Railway Reservation
+                </a>
+                <div class="flex gap-4 items-center">
+                    {% if user.is_authenticated %}
+                        <span class="text-gray-700">👋 Hi, {{ user.username }}</span>
+                        <a href="{% url 'select_destinations' %}" class="px-4 py-2 bg-indigo-600 text-white rounded-full hover:bg-indigo-700 transition duration-300">
+                            Book Ticket
+                        </a>
+                        <a href="{% url 'check_pnr_status' %}" class="px-4 py-2 bg-purple-600 text-white rounded-full hover:bg-purple-700 transition duration-300">
+                            Check PNR
+                        </a>
+                        <a href="{% url 'logout_user' %}" class="px-4 py-2 bg-gray-600 text-white rounded-full hover:bg-gray-700 transition duration-300">
+                            Logout
+                        </a>
+                    {% else %}
+                        <a href="{% url 'login_page' %}" class="px-4 py-2 bg-indigo-600 text-white rounded-full hover:bg-indigo-700 transition duration-300">
+                            Login
+                        </a>
+                        <a href="{% url 'signup_page' %}" class="px-4 py-2 bg-purple-600 text-white rounded-full hover:bg-purple-700 transition duration-300">
+                            Sign Up
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Messages -->
+    {% if messages %}
+    <div class="container mx-auto px-6 py-4 no-print">
+        {% for message in messages %}
+        <div class="mb-4 p-4 rounded-lg shadow-lg {% if message.tags == 'success' %}bg-green-100 border-l-4 border-green-500 text-green-700{% elif message.tags == 'error' %}bg-red-100 border-l-4 border-red-500 text-red-700{% else %}bg-blue-100 border-l-4 border-blue-500 text-blue-700{% endif %}">
+            <p class="font-medium">{{ message }}</p>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-6 py-8">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gradient-to-r from-indigo-600 to-purple-700 text-white py-8 mt-20 no-print">
+        <div class="container mx-auto px-6 text-center">
+            <p class="text-lg mb-2">🚂 Railway Ticket Reservation System</p>
+            <p class="text-indigo-200">Your journey begins here • Safe & Secure Booking</p>
+            <p class="text-indigo-300 text-sm mt-4">© 2025 Railway Reservation. All rights reserved.</p>
+        </div>
+    </footer>
+
+</body>
+</html>

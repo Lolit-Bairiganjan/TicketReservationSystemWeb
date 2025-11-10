@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="WhatsApp Image 2025-08-23 at 11.02.52 PM.jpeg">
-    <title>GetSetRide</title>
+    <title>Features - GetSetRide</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
@@ -140,7 +140,7 @@
     <header class="bg-gradient-to-r from-indigo-600 to-purple-600 shadow-2xl rounded-b-xl border-b-2 border-indigo-200/20">
         <nav class="container mx-auto px-6 py-4 flex items-center justify-between">
             <!-- Logo -->
-            <a href="#" class="flex items-center space-x-2">
+            <a href="/" class="flex items-center space-x-2">
                 <img src="{% static 'mainApp/train.png' %}" alt="GetSetReady" class="h-10 w-10 mr-4 flex-shrink-0">
                 <span class="text-2xl font-bold bg-gradient-to-r from-indigo-300 to-purple-300 bg-clip-text text-transparent">GetSetRide</span>
             </a>
@@ -150,13 +150,13 @@
                 
                 {% if user.is_authenticated %}
 
-                <a href="" class="nav-link-gradient text-gray-200 px-4 py-2 rounded-lg transition-all duration-300 relative overflow-hidden group">
+                <a href="/" class="nav-link-gradient text-gray-200 px-4 py-2 rounded-lg transition-all duration-300 relative overflow-hidden group">
                     <span class="relative z-10">Home</span>
                 </a>
-                <a href="features/" class="nav-link-gradient text-gray-200 px-4 py-2 rounded-lg transition-all duration-300 relative overflow-hidden group">
-                    <span class="relative z-10">Features</span>
+                <a href="/features/" class="nav-link-gradient text-gray-200 px-4 py-2 rounded-lg transition-all duration-300 relative overflow-hidden group bg-white/20">
+                    <span class="relative z-10 text-white font-semibold">Features</span>
                 </a>
-                <a href="contacts/" class="nav-link-gradient text-gray-200 px-4 py-2 rounded-lg transition-all duration-300 relative overflow-hidden group">
+                <a href="/contacts/" class="nav-link-gradient text-gray-200 px-4 py-2 rounded-lg transition-all duration-300 relative overflow-hidden group">
                     <span class="relative z-10">Contact</span>
                 </a>
                 <div class="username-paint text-gray-200 px-4 py-2">
@@ -167,13 +167,13 @@
                 </a>
                 {% else %}
                 
-                <a href="" class="nav-link-gradient text-gray-200 px-4 py-2 rounded-lg transition-all duration-300 relative overflow-hidden group">
+                <a href="/" class="nav-link-gradient text-gray-200 px-4 py-2 rounded-lg transition-all duration-300 relative overflow-hidden group">
                     <span class="relative z-10">Home</span>
                 </a>
-                <a href="/features" class="nav-link-gradient text-gray-200 px-4 py-2 rounded-lg transition-all duration-300 relative overflow-hidden group">
-                    <span class="relative z-10">Features</span>
+                <a href="/features/" class="nav-link-gradient text-gray-200 px-4 py-2 rounded-lg transition-all duration-300 relative overflow-hidden group bg-white/20">
+                    <span class="relative z-10 text-white font-semibold">Features</span>
                 </a>
-                <a href="/contacts" class="nav-link-gradient text-gray-200 px-4 py-2 rounded-lg transition-all duration-300 relative overflow-hidden group">
+                <a href="/contacts/" class="nav-link-gradient text-gray-200 px-4 py-2 rounded-lg transition-all duration-300 relative overflow-hidden group">
                     <span class="relative z-10">Contact</span>
                 </a>
                 <a href="/login" class="nav-link-gradient text-gray-200 px-4 py-2 rounded-lg transition-all duration-300 relative overflow-hidden group">
@@ -194,13 +194,13 @@
         <!-- Mobile Menu (hidden by default) -->
         <div id="mobile-menu" class="hidden md:hidden bg-gradient-to-r from-indigo-600 to-purple-600 rounded-b-xl shadow-2xl border-t border-indigo-200/10">
             <div class="flex flex-col p-4 space-y-2">
-                <a href="" class="nav-link-gradient block px-4 py-2 text-gray-200 rounded-lg transition-all duration-300 relative overflow-hidden group">
+                <a href="/" class="nav-link-gradient block px-4 py-2 text-gray-200 rounded-lg transition-all duration-300 relative overflow-hidden group">
                     <span class="relative z-10">Home</span>
                 </a>
-                <a href="/features" class="nav-link-gradient block px-4 py-2 text-gray-200 rounded-lg transition-all duration-300 relative overflow-hidden group">
-                    <span class="relative z-10">Features</span>
+                <a href="/features/" class="nav-link-gradient block px-4 py-2 text-white bg-white/20 rounded-lg transition-all duration-300 relative overflow-hidden group">
+                    <span class="relative z-10 font-semibold">Features</span>
                 </a>
-                <a href="/contacts" class="nav-link-gradient block px-4 py-2 text-gray-200 rounded-lg transition-all duration-300 relative overflow-hidden group">
+                <a href="/contacts/" class="nav-link-gradient block px-4 py-2 text-gray-200 rounded-lg transition-all duration-300 relative overflow-hidden group">
                     <span class="relative z-10">Contact</span>
                 </a>
                 <a href="/login" class="nav-link-gradient block px-4 py-2 text-gray-200 rounded-lg transition-all duration-300 relative overflow-hidden group">
@@ -210,19 +210,8 @@
         </div>
     </header>
 
-    <!-- Messages Section -->
-     {% if messages %}
-        <div class="container mx-auto px-6 mt-4">
-            {% for message in messages %}
-                <div class="message-alert p-4 mb-4 rounded-lg transform translate-y-0 opacity-100 transition-all duration-500 ease-in-out {% if message.tags == 'success' %}bg-green-100 text-green-700 border border-green-300{% elif message.tags == 'error' %}bg-red-100 text-red-700 border border-red-300{% else %}bg-blue-100 text-blue-700 border border-blue-300{% endif %}">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        </div>
-    {% endif %}
-
     <!-- Hero Section -->
-    <section class="hero-bg rounded-xl shadow-2xl mx-4 md:mx-auto max-w-7xl mt-8 py-24 text-center relative overflow-hidden">
+    <section class="hero-bg rounded-xl shadow-2xl mx-4 md:mx-auto max-w-7xl mt-8 py-16 text-center relative overflow-hidden">
         <!-- Decorative elements -->
         <div class="absolute top-0 left-0 w-20 h-20 bg-indigo-200 rounded-full opacity-20 floating-animation"></div>
         <div class="absolute bottom-0 right-0 w-32 h-32 bg-purple-200 rounded-full opacity-20 floating-animation" style="animation-delay: -3s;"></div>
@@ -230,90 +219,98 @@
         <div class="container mx-auto px-6 relative z-10">
             <div class="mb-6">
                 <span class="inline-block px-4 py-2 bg-indigo-100 text-indigo-600 text-sm font-semibold rounded-full mb-4">
-                    🚄 India's Most Trusted Train Booking Platform
+                    ✨ Powerful Features
                 </span>
             </div>
-            <h1 class="text-5xl md:text-6xl font-extrabold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-6 leading-tight">
-                Your Journey Awaits
+            <h1 class="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-6 leading-tight">
+                Why Choose GetSetRide?
             </h1>
             <p class="text-xl md:text-2xl text-gray-700 mb-10 max-w-4xl mx-auto leading-relaxed">
-                Discover the easiest way to book your railway tickets. Fast, reliable, and comfortable - your perfect travel companion.
+                Discover the powerful features that make us India's most trusted railway booking platform.
             </p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                {% if user.is_authenticated %}
-                    <a href="{% url 'select_destinations' %}" class="px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-lg font-bold rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-300">
-    Book Your Ticket Now →
-</a>
-                {% else %}
-                    <a href="{% url 'login_page' %}" class="inline-block px-10 py-5 text-lg font-bold text-white bg-gradient-to-r from-indigo-600 to-purple-600 rounded-full shadow-2xl hover:shadow-3xl transform hover:scale-105 transition duration-300">
-                        🎫 Login to Book Tickets
-                    </a>
-                {% endif %}
-                <a href="/features" class="inline-block px-10 py-5 text-lg font-semibold text-indigo-600 border-2 border-indigo-600 rounded-full hover:bg-indigo-600 hover:text-white transition duration-300">
-                    Learn More
-                </a>
-                {% if user.is_authenticated %}
-                    <a href="{% url 'check_pnr_status' %}" class="inline-block px-8 py-4 text-lg font-semibold text-indigo-600 border-2 border-indigo-600 rounded-full hover:bg-indigo-600 hover:text-white transition duration-300">
-                        Check PNR Status
-                    </a>
-                {% else %}
-                    <a href="{% url 'login_page' %}" class="inline-block px-8 py-4 text-lg font-semibold text-indigo-600 border-2 border-indigo-600 rounded-full hover:bg-indigo-600 hover:text-white transition duration-300">
-                        Login to Check PNR
-                    </a>
-                {% endif %}
-            </div>
         </div>
     </section>
 
     <!-- Features Section -->
     <section class="py-20 bg-gradient-to-r from-blue-50 to-indigo-100">
         <div class="container mx-auto px-6">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl md:text-5xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-4">
-                    Why Choose Us?
-                </h2>
-                <p class="text-xl text-gray-700 mt-4 max-w-3xl mx-auto leading-relaxed">
-                    We offer a seamless booking experience with features designed for your convenience and peace of mind.
-                </p>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-                <!-- Feature 1 -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+                
+                <!-- Feature 1: Effortless Booking -->
                 <div class="bg-white/80 backdrop-blur-md p-8 rounded-2xl shadow-xl hover:shadow-2xl text-center transform hover:scale-105 transition duration-500 border border-white/20">
                     <div class="bg-gradient-to-r from-indigo-500 to-purple-600 p-4 rounded-full w-20 h-20 mx-auto mb-6 flex items-center justify-center">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
                         </svg>
                     </div>
-                    <h3 class="text-2xl font-bold text-gray-800 mb-4">⚡ Fast Booking</h3>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">⚡ Effortless Booking</h3>
                     <p class="text-gray-600 leading-relaxed">
-                        Book your tickets in just a few clicks. Our system is optimized for lightning-fast performance.
+                        Our intuitive interface allows you to book tickets in minutes, with real-time availability and comprehensive fare details at your fingertips.
                     </p>
                 </div>
 
-                <!-- Feature 2 -->
+                <!-- Feature 2: Secure Payments -->
                 <div class="bg-white/80 backdrop-blur-md p-8 rounded-2xl shadow-xl hover:shadow-2xl text-center transform hover:scale-105 transition duration-500 border border-white/20">
                     <div class="bg-gradient-to-r from-green-500 to-teal-600 p-4 rounded-full w-20 h-20 mx-auto mb-6 flex items-center justify-center">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.955a11.955 11.955 0 018.382 3.029m-5.618-4.016l-4.717 11.536M4.382 6.014A11.955 11.955 0 0012 21.045a11.955 11.955 0 007.618-2.992" />
                         </svg>
                     </div>
-                    <h3 class="text-2xl font-bold text-gray-800 mb-4">🔒 Secure Payments</h3>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">🔒 Secure & Transparent</h3>
                     <p class="text-gray-600 leading-relaxed">
-                        Your transactions are completely safe with our military-grade encrypted payment gateway.
+                        Enjoy complete peace of mind with our military-grade secure payment gateway and transparent pricing. No hidden fees, ever.
                     </p>
                 </div>
 
-                <!-- Feature 3 -->
+                <!-- Feature 3: Real-time Updates -->
                 <div class="bg-white/80 backdrop-blur-md p-8 rounded-2xl shadow-xl hover:shadow-2xl text-center transform hover:scale-105 transition duration-500 border border-white/20">
                     <div class="bg-gradient-to-r from-orange-500 to-red-600 p-4 rounded-full w-20 h-20 mx-auto mb-6 flex items-center justify-center">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 13l-3 3m0 0l-3-3m3 3V3m0 16h6" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                     </div>
-                    <h3 class="text-2xl font-bold text-gray-800 mb-4">📱 Instant Confirmation</h3>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">📱 Real-time Updates</h3>
                     <p class="text-gray-600 leading-relaxed">
-                        Receive instant confirmation and real-time updates on your booking status directly to your phone.
+                        Stay informed with instant notifications about train schedules, platform changes, and booking confirmations delivered directly to your device.
+                    </p>
+                </div>
+
+                <!-- Feature 4: Multi-language Support -->
+                <div class="bg-white/80 backdrop-blur-md p-8 rounded-2xl shadow-xl hover:shadow-2xl text-center transform hover:scale-105 transition duration-500 border border-white/20">
+                    <div class="bg-gradient-to-r from-purple-500 to-pink-600 p-4 rounded-full w-20 h-20 mx-auto mb-6 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">🌐 Multi-language Support</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Book tickets in your preferred language with support for Hindi, English, and 10+ regional languages across India.
+                    </p>
+                </div>
+
+                <!-- Feature 5: 24/7 Customer Support -->
+                <div class="bg-white/80 backdrop-blur-md p-8 rounded-2xl shadow-xl hover:shadow-2xl text-center transform hover:scale-105 transition duration-500 border border-white/20">
+                    <div class="bg-gradient-to-r from-blue-500 to-indigo-600 p-4 rounded-full w-20 h-20 mx-auto mb-6 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192L5.636 18.364M12 2.25a9.75 9.75 0 100 19.5 9.75 9.75 0 000-19.5z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">🎧 24/7 Customer Support</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Get instant help anytime with our round-the-clock customer support team, available via chat, phone, and email.
+                    </p>
+                </div>
+
+                <!-- Feature 6: Smart Recommendations -->
+                <div class="bg-white/80 backdrop-blur-md p-8 rounded-2xl shadow-xl hover:shadow-2xl text-center transform hover:scale-105 transition duration-500 border border-white/20">
+                    <div class="bg-gradient-to-r from-yellow-500 to-orange-600 p-4 rounded-full w-20 h-20 mx-auto mb-6 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">🧠 Smart Recommendations</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        AI-powered suggestions for optimal routes, travel times, and seat preferences based on your booking history and preferences.
                     </p>
                 </div>
             </div>
@@ -325,24 +322,17 @@
         <div class="container mx-auto px-6 text-center">
             <div class="max-w-4xl mx-auto">
                 <h2 class="text-4xl md:text-5xl font-bold text-white mb-6">
-                    Ready to Start Your Journey? 🚄
+                    Ready to Experience These Features? 🚄
                 </h2>
                 <p class="text-xl text-indigo-100 mb-10 leading-relaxed">
-                    Join millions of satisfied travelers who trust us for their railway bookings. Your adventure awaits!
+                    Join millions of satisfied travelers and discover why GetSetRide is India's preferred railway booking platform.
                 </p>
                 <div class="flex flex-col sm:flex-row gap-6 justify-center items-center">
-                    {% if user.is_authenticated %}
-                        <a href="{% url 'select_destinations' %}" 
-                           class="inline-block px-12 py-6 text-xl font-bold text-indigo-600 bg-white rounded-full shadow-2xl hover:shadow-3xl transform hover:scale-110 transition duration-300 hover:bg-gray-50">
-                            🎫 Book Now - It's Free!
-                        </a>
-                    {% else %}
-                        <a href="{% url 'login_page' %}" 
-                           class="inline-block px-12 py-6 text-xl font-bold text-indigo-600 bg-white rounded-full shadow-2xl hover:shadow-3xl transform hover:scale-110 transition duration-300 hover:bg-gray-50">
-                            🎫 Login to Book Tickets
-                        </a>
-                    {% endif %}
-                    <a href="{% url 'contacts_page' %}" 
+                    <a href="/" 
+                       class="inline-block px-12 py-6 text-xl font-bold text-indigo-600 bg-white rounded-full shadow-2xl hover:shadow-3xl transform hover:scale-110 transition duration-300 hover:bg-gray-50">
+                        🏠 Back to Home
+                    </a>
+                    <a href="/contacts/" 
                        class="inline-block px-12 py-6 text-xl font-semibold text-white border-2 border-white rounded-full hover:bg-white hover:text-indigo-600 transition duration-300">
                         Contact Support
                     </a>
@@ -362,25 +352,13 @@
                     <p class="text-gray-300 mb-4 leading-relaxed">
                         India's most trusted railway booking platform. Making train travel easy, convenient, and delightful for everyone.
                     </p>
-                    <div class="flex space-x-4">
-                        <a href="#" class="text-gray-300 hover:text-indigo-400 transition duration-300">
-                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/>
-                            </svg>
-                        </a>
-                        <a href="#" class="text-gray-300 hover:text-indigo-400 transition duration-300">
-                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M22.46 6c-.77.35-1.6.58-2.46.69.88-.53 1.56-1.37 1.88-2.38-.83.5-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29 0 .34.04.67.11.98C8.28 9.09 5.11 7.38 3 4.79c-.37.63-.58 1.37-.58 2.15 0 1.49.75 2.81 1.91 3.56-.71 0-1.37-.2-1.95-.5v.03c0 2.08 1.48 3.82 3.44 4.21a4.22 4.22 0 0 1-1.93.07 4.28 4.28 0 0 0 4 2.98 8.521 8.521 0 0 1-5.33 1.84c-.34 0-.68-.02-1.02-.06C3.44 20.29 5.7 21 8.12 21 16 21 20.33 14.46 20.33 8.79c0-.19 0-.37-.01-.56.84-.6 1.56-1.36 2.14-2.23z"/>
-                            </svg>
-                        </a>
-                    </div>
                 </div>
                 <div>
                     <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
                     <ul class="space-y-2">
-                        <li><a href="/features/" class="text-gray-300 hover:text-indigo-400 transition duration-300">Features</a></li>
-                        <li><a href="/contact/" class="text-gray-300 hover:text-indigo-400 transition duration-300">Contact</a></li>
-                        <li><a href="/about/" class="text-gray-300 hover:text-indigo-400 transition duration-300">About Us</a></li>
+                        <li><a href="/" class="text-gray-300 hover:text-indigo-400 transition duration-300">Home</a></li>
+                        <li><a href="/features/" class="text-indigo-400 font-semibold">Features</a></li>
+                        <li><a href="/contacts/" class="text-gray-300 hover:text-indigo-400 transition duration-300">Contact</a></li>
                     </ul>
                 </div>
                 <div>
@@ -398,37 +376,13 @@
         </div>
     </footer>
 
-    <!-- JavaScript for Message Animation -->
     <script>
-        // Auto-hide messages after 4 seconds
-        document.addEventListener('DOMContentLoaded', function() {
-            const messages = document.querySelectorAll('.message-alert');
-            
-            messages.forEach(function(message) {
-                // Start fade out after 4 seconds
-                setTimeout(function() {
-                    message.style.transform = 'translateY(-20px)';
-                    message.style.opacity = '0';
-                    
-                    // Remove from DOM after animation completes
-                    setTimeout(function() {
-                        message.remove();
-                    }, 500);
-                }, 4000);
-            });
-        });
-    </script>
-
-    <!-- JavaScript for Mobile Menu -->
-    <script>
-        const mobileMenuButton = document.getElementById('mobile-menu-button');
-        const mobileMenu = document.getElementById('mobile-menu');
-
-        mobileMenuButton.addEventListener('click', () => {
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            const mobileMenu = document.getElementById('mobile-menu');
             mobileMenu.classList.toggle('hidden');
         });
     </script>
 
 </body>
-
 </html>

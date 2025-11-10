@@ -1,11 +1,116 @@
-<h2>Book My Ticket</h2>
-<form method="post" id="search-form">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Search Schedules</button>
-</form>
+{% extends 'mainApp/base.html' %}
+
+{% block title %}Search Trains{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <div class="glass-effect rounded-2xl shadow-2xl p-8 mb-8">
+        <h1 class="text-4xl font-bold text-center bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-8">
+            🚂 Search Your Train
+        </h1>
+
+        <form method="post" class="space-y-6" id="search-form">
+            {% csrf_token %}
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Train Selection -->
+                <div>
+                    <label class="block text-gray-700 font-semibold mb-2">
+                        🚉 Select Train
+                    </label>
+                    {{ form.train }}
+                </div>
+
+                <!-- Journey Date -->
+                <div>
+                    <label class="block text-gray-700 font-semibold mb-2">
+                        📅 Journey Date
+                    </label>
+                    {{ form.journey_date }}
+                </div>
+
+                <!-- From Station -->
+                <div>
+                    <label class="block text-gray-700 font-semibold mb-2">
+                        🏁 From Station
+                    </label>
+                    {{ form.from_station }}
+                </div>
+
+                <!-- To Station -->
+                <div>
+                    <label class="block text-gray-700 font-semibold mb-2">
+                        🎯 To Station
+                    </label>
+                    {{ form.to_station }}
+                </div>
+            </div>
+
+            {% if form.errors %}
+            <div class="bg-red-100 border-l-4 border-red-500 p-4 rounded-lg">
+                <p class="text-red-700 font-semibold">Please correct the following errors:</p>
+                <ul class="list-disc list-inside text-red-600 mt-2">
+                    {% for field, errors in form.errors.items %}
+                        {% for error in errors %}
+                            <li>{{ field }}: {{ error }}</li>
+                        {% endfor %}
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+            <div class="text-center">
+                <button 
+                    type="submit"
+                    class="px-12 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-lg font-bold rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-300"
+                >
+                    🔍 Search Trains
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Info Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+        <div class="glass-effect rounded-xl p-6 text-center transform hover:scale-105 transition duration-300">
+            <div class="text-4xl mb-3">⚡</div>
+            <h3 class="font-bold text-gray-800 mb-2">Quick Booking</h3>
+            <p class="text-gray-600 text-sm">Book tickets in just a few clicks</p>
+        </div>
+        <div class="glass-effect rounded-xl p-6 text-center transform hover:scale-105 transition duration-300">
+            <div class="text-4xl mb-3">💺</div>
+            <h3 class="font-bold text-gray-800 mb-2">Choose Your Seat</h3>
+            <p class="text-gray-600 text-sm">Select preferred berth and coach</p>
+        </div>
+        <div class="glass-effect rounded-xl p-6 text-center transform hover:scale-105 transition duration-300">
+            <div class="text-4xl mb-3">✅</div>
+            <h3 class="font-bold text-gray-800 mb-2">Instant Confirmation</h3>
+            <p class="text-gray-600 text-sm">Get PNR immediately after booking</p>
+        </div>
+    </div>
+</div>
+
+<style>
+    select, input[type="date"] {
+        width: 100%;
+        padding: 12px 16px;
+        border: 2px solid #e5e7eb;
+        border-radius: 10px;
+        font-size: 16px;
+        transition: all 0.3s;
+        background-color: white;
+    }
+    
+    select:focus, input[type="date"]:focus {
+        outline: none;
+        border-color: #6366f1;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    }
+</style>
+
 <script>
   document.getElementById('id_train').addEventListener('change', function() {
     document.getElementById('search-form').submit();
   });
 </script>
+{% endblock %}

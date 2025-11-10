@@ -60,6 +60,26 @@
             margin: -20px -20px 20px -20px;
             border-radius: 6px 6px 0 0;
         }
+        .status-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .status-confirmed {
+            background-color: #28a745;
+            color: white;
+        }
+        .status-waiting {
+            color: orange;
+            font-weight: bold;
+        }
+        .status-cancelled {
+            background-color: #dc3545;
+            color: white;
+        }
         .info-row {
             display: flex;
             margin: 10px 0;
@@ -95,18 +115,6 @@
         tr:nth-child(even) {
             background-color: #f9f9f9;
         }
-        .status-confirmed {
-            color: green;
-            font-weight: bold;
-        }
-        .status-waiting {
-            color: orange;
-            font-weight: bold;
-        }
-        .status-cancelled {
-            color: red;
-            font-weight: bold;
-        }
         .messages {
             margin: 20px 0;
         }
@@ -125,17 +133,51 @@
             color: #721c24;
             border: 1px solid #f5c6cb;
         }
-        .back-link {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: #6c757d;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
+        .actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+            flex-wrap: wrap;
         }
-        .back-link:hover {
+        .btn {
+            padding: 12px 25px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            background-color: #007bff;
+            color: white;
+            transition: all 0.3s;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+        .btn-danger {
+            background-color: #dc3545 !important;
+        }
+        .btn-danger:hover {
+            background-color: #c82333 !important;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+        }
+        .btn-secondary:hover {
             background-color: #5a6268;
+        }
+        .cancellation-info {
+            background-color: #f8d7da;
+            border: 2px solid #dc3545;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .cancellation-info h3 {
+            color: #dc3545;
+            margin-top: 0;
         }
     </style>
 </head>
@@ -165,7 +207,12 @@
         {% if ticket %}
         <div class="ticket-details">
             <div class="ticket-header">
-                <h2 style="margin: 0;">PNR: {{ ticket.pnr }}</h2>
+                <h2 style="margin: 0;">
+                    PNR: {{ ticket.pnr }}
+                    <span class="status-badge status-{{ ticket.booking_status|lower }}">
+                        {{ ticket.get_booking_status_display }}
+                    </span>
+                </h2>
             </div>
 
             <div class="info-row">
@@ -175,7 +222,7 @@
 
             <div class="info-row">
                 <span class="info-label">Journey Date:</span>
-                <span class="info-value">{{ ticket.schedule.journey_date }}</span>
+                <span class="info-value">{{ ticket.schedule.journey_date|date:"d M Y (l)" }}</span>
             </div>
 
             <div class="info-row">
@@ -205,10 +252,26 @@
 
             <div class="info-row">
                 <span class="info-label">Booking Status:</span>
-                <span class="info-value status-{{ ticket.booking_status|lower }}">
-                    {{ ticket.get_booking_status_display }}
+                <span class="info-value">
+                    <span class="status-badge status-{{ ticket.booking_status|lower }}">
+                        {{ ticket.get_booking_status_display }}
+                    </span>
                 </span>
             </div>
+
+            {% if ticket.booking_status == 'CANCELLED' %}
+            <div class="cancellation-info">
+                <h3>🗑️ Cancellation Details</h3>
+                <div class="info-row">
+                    <span class="info-label">Cancelled At:</span>
+                    <span class="info-value">{{ ticket.cancelled_at|date:"d M Y, h:i A" }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Reason:</span>
+                    <span class="info-value">{{ ticket.cancellation_reason }}</span>
+                </div>
+            </div>
+            {% endif %}
 
             <h3>Passenger Details</h3>
             <table>
@@ -234,8 +297,10 @@
                         <td>{{ passenger.coach.coach_number|default:"N/A" }}</td>
                         <td>{{ passenger.seat_number|default:"N/A" }}</td>
                         <td>{{ passenger.get_berth_type_display|default:"N/A" }}</td>
-                        <td class="status-{{ passenger.current_status|lower }}">
-                            {{ passenger.get_current_status_display }}
+                        <td>
+                            <span class="status-badge status-{{ passenger.current_status|lower }}">
+                                {{ passenger.get_current_status_display }}
+                            </span>
                         </td>
                     </tr>
                     {% empty %}
@@ -245,10 +310,28 @@
                     {% endfor %}
                 </tbody>
             </table>
+
+            <div class="actions">
+                <a href="{% url 'main_page' %}" class="btn btn-secondary">← Back to Home</a>
+                
+                {% if ticket.booking_status == 'CONFIRMED' %}
+                    <a href="{% url 'ticket_detail' ticket.pnr %}" class="btn">📄 View Full Details</a>
+                    
+                    <a href="{% url 'add_passengers' ticket.pnr %}" class="btn">➕ Add More Passengers</a>
+                    
+                    {% if ticket.can_cancel %}
+                        <a href="{% url 'cancel_ticket' ticket.pnr %}" class="btn btn-danger">
+                            🗑️ Cancel Ticket
+                        </a>
+                    {% endif %}
+                {% elif ticket.booking_status == 'CANCELLED' %}
+                    <a href="{% url 'select_destinations' %}" class="btn">🎫 Book New Ticket</a>
+                {% endif %}
+                
+                <button onclick="window.print()" class="btn">🖨️ Print Details</button>
+            </div>
         </div>
         {% endif %}
-
-        <a href="{% url 'main_page' %}" class="back-link">← Back to Home</a>
     </div>
 </body>
 </html>

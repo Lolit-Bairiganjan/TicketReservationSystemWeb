@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cancel Ticket - PNR: {{ ticket.pnr }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #dc3545;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .warning-box {
+            background-color: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .warning-box h3 {
+            color: #856404;
+            margin-top: 0;
+        }
+        .info-row {
+            display: flex;
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+        .info-label {
+            font-weight: bold;
+            width: 200px;
+            color: #555;
+        }
+        .info-value {
+            color: #333;
+        }
+        .refund-info {
+            background-color: #d4edda;
+            border: 2px solid #28a745;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .refund-amount {
+            font-size: 28px;
+            font-weight: bold;
+            color: #28a745;
+            margin: 10px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #dc3545;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+        td {
+            padding: 10px;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .form-group {
+            margin: 20px 0;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #333;
+        }
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            resize: vertical;
+            box-sizing: border-box;
+        }
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        .btn {
+            padding: 12px 30px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+        .btn-cancel {
+            background-color: #dc3545;
+            color: white;
+        }
+        .btn-cancel:hover {
+            background-color: #c82333;
+        }
+        .btn-back {
+            background-color: #6c757d;
+            color: white;
+        }
+        .btn-back:hover {
+            background-color: #5a6268;
+        }
+        .messages {
+            margin: 20px 0;
+        }
+        .message {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .policy-list {
+            list-style: none;
+            padding-left: 0;
+        }
+        .policy-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .policy-list li:before {
+            content: "✓ ";
+            color: #28a745;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚠️ Cancel Ticket</h1>
+
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="message error">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="warning-box">
+            <h3>⚠️ Important Notice</h3>
+            <p>You are about to cancel ticket with PNR: <strong>{{ ticket.pnr }}</strong></p>
+            <p>This action cannot be undone. All passenger bookings under this PNR will be cancelled.</p>
+        </div>
+
+        <h3>Ticket Details</h3>
+        <div class="info-row">
+            <span class="info-label">PNR:</span>
+            <span class="info-value">{{ ticket.pnr }}</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Train:</span>
+            <span class="info-value">{{ ticket.schedule.train.name }} ({{ ticket.schedule.train.train_number }})</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Journey Date:</span>
+            <span class="info-value">{{ ticket.schedule.journey_date }}</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">From - To:</span>
+            <span class="info-value">{{ ticket.source_station.name }} → {{ ticket.destination_station.name }}</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Total Fare:</span>
+            <span class="info-value">₹{{ ticket.total_fare }}</span>
+        </div>
+
+        <h3>Passengers to be Cancelled</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Age</th>
+                    <th>Gender</th>
+                    <th>Coach</th>
+                    <th>Seat</th>
+                    <th>Berth</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for passenger in passengers %}
+                <tr>
+                    <td>{{ passenger.name }}</td>
+                    <td>{{ passenger.age }}</td>
+                    <td>{{ passenger.get_gender_display }}</td>
+                    <td>{{ passenger.coach.coach_number|default:"N/A" }}</td>
+                    <td>{{ passenger.seat_number|default:"N/A" }}</td>
+                    <td>{{ passenger.get_berth_type_display|default:"N/A" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="refund-info">
+            <h3>💰 Refund Information</h3>
+            <div class="refund-amount">₹{{ refund_amount|floatformat:2 }}</div>
+            <p>Refund amount will be credited to your original payment method within 5-7 business days</p>
+        </div>
+
+        <div class="warning-box">
+            <h3>📋 Cancellation Policy</h3>
+            <ul class="policy-list">
+                <li>More than 24 hours before journey: 75% refund</li>
+                <li>12-24 hours before journey: 50% refund</li>
+                <li>4-12 hours before journey: 25% refund</li>
+                <li>Less than 4 hours before journey: No refund</li>
+            </ul>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="reason">Reason for Cancellation: *</label>
+                <textarea id="reason" name="reason" rows="4" required placeholder="Please provide a reason for cancelling this ticket..."></textarea>
+            </div>
+
+            <div class="button-group">
+                <button type="submit" class="btn btn-cancel" onclick="return confirm('Are you sure you want to cancel this ticket? This action cannot be undone.')">
+                    🗑️ Confirm Cancellation
+                </button>
+                <a href="{% url 'ticket_detail' ticket.pnr %}" class="btn btn-back">
+                    ← Go Back
+                </a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
